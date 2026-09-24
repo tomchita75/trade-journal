@@ -21,15 +21,15 @@ export function AddTradeDialog({ onSaved }: { onSaved: () => void }) {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus className="h-3.5 w-3.5" />
-          Add trade
+          Добавить сделку
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Add trade</DialogTitle>
+          <DialogTitle>Добавить сделку</DialogTitle>
           <DialogDescription>
-            Choose an account and enter your buys and sells. Save an entry alone for an open
-            position, or include the exit to record a closed trade.
+            Выберите аккаунт и введите ваши покупки и продажи. Сохраните только вход для открытой
+            позиции или включите выход для записи закрытой сделки.
           </DialogDescription>
         </DialogHeader>
         <ManualTradeEntry

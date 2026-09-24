@@ -1,5 +1,5 @@
 diff --git a/dist/chunk-JAL36ZHN.js b/dist/chunk-JAL36ZHN.js
-index c54b8c06eeea06bcf13f495a774c3d835fd8facc..10b576e19e42bd892cb5bf78431c7a156f71e113 100644
+index c54b8c06eeea06bcf13f495a774c3d835fd8facc..649228f0d4c2307e7cf9e0fc2f38d4a24390e592 100644
 --- a/dist/chunk-JAL36ZHN.js
 +++ b/dist/chunk-JAL36ZHN.js
 @@ -86,11 +86,13 @@ import { createHmac as createHmac2 } from "crypto";
@@ -125,7 +125,7 @@ index c54b8c06eeea06bcf13f495a774c3d835fd8facc..10b576e19e42bd892cb5bf78431c7a15
 +  const now = Date.now();
 +  const dayMs = 24 * 60 * 60 * 1000;
 +  const windowMs = 7 * dayMs;
-+  const historyStart = now - 365 * dayMs;
++  const historyStart = now - 30 * dayMs;
 +
 +  const walletPromise = bybitRequest(
 +    apiKey,

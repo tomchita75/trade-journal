@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 
-/** Use in a component keyed by its filter snapshot so old results cannot cross scopes. */
+/** Используйте в компоненте с ключом по снимку фильтров, чтобы старые результаты не пересекали скоупы. */
 export function useAiRequest() {
   const active = useRef(false);
   const pending = useRef(false);
@@ -23,7 +23,7 @@ export function useAiRequest() {
       const result = await request();
       if (active.current) accept(result);
     } catch (cause) {
-      if (active.current) setError(cause instanceof Error ? cause.message : "AI request failed");
+      if (active.current) setError(cause instanceof Error ? cause.message : "AI-запрос не удался");
     } finally {
       pending.current = false;
       if (active.current) setBusy(false);

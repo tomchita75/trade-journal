@@ -62,7 +62,7 @@ function Settings() {
       );
       setFailure("");
     } catch (e) {
-      setFailure(e instanceof Error ? e.message : "Save failed");
+      setFailure(e instanceof Error ? e.message : "Ошибка сохранения");
       return;
     }
     setSaved(true);
@@ -72,13 +72,13 @@ function Settings() {
 
   return (
     <div>
-      <FilterBar title="Settings" />
+      <FilterBar title="Настройки" />
       <div className="mx-auto max-w-2xl space-y-3 p-4">
         <JournalDefaultSettings />
         <MarketDataSettings />
         <Card>
           <CardHeader>
-            <CardTitle>Journal</CardTitle>
+            <CardTitle>Журнал</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
@@ -86,44 +86,45 @@ function Settings() {
                 htmlFor="display-timezone"
                 className="mb-1 block text-xs text-muted-foreground"
               >
-                Display timezone (IANA)
+                Часовой пояс отображения (IANA)
               </Label>
               <TimeZonePicker
                 id="display-timezone"
-                label="Display timezone"
+                label="Часовой пояс отображения"
                 value={timeZone}
                 onValueChange={setTimeZone}
                 disabled={!data}
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Trade times, calendars, journal days, and analytics use this timezone.
+                Время сделок, календари, дни журнала и аналитика используют этот часовой пояс.
               </p>
               <button
                 className="mt-1 text-xs text-muted-foreground underline"
                 onClick={() => setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)}
               >
-                Use this device's timezone ({Intl.DateTimeFormat().resolvedOptions().timeZone})
+                Использовать часовой пояс устройства ({Intl.DateTimeFormat().resolvedOptions().timeZone})
               </button>
             </div>
             <div>
               <Label htmlFor="import-timezone" className="mb-1 block text-xs text-muted-foreground">
-                Default import timezone (IANA)
+                Часовой пояс импорта по умолчанию (IANA)
               </Label>
               <TimeZonePicker
                 id="import-timezone"
-                label="Default import timezone"
+                label="Часовой пояс импорта по умолчанию"
                 value={importTimeZone}
                 onValueChange={setImportTimeZone}
                 disabled={!data}
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Use your broker statement's timezone for timestamps without an offset. You can
-                override it for each file. Changing this setting affects future imports only.
+                Используйте часовой пояс отчёта вашего брокера для временных меток без смещения.
+                Вы можете переопределить его для каждого файла. Изменение этой настройки влияет
+                только на будущие импорты.
               </p>
             </div>
             <div>
               <Label className="mb-1 block text-xs text-muted-foreground">
-                Contract multipliers (futures/options) — one per line, SYMBOL=multiplier
+                Множители контрактов (фьючерсы/опционы) — по одному на строку, SYMBOL=множитель
               </Label>
               <textarea
                 value={multipliers}
@@ -133,8 +134,8 @@ function Settings() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Saving multipliers recalculates existing trade P&L from fills and preserves
-              annotations.
+              Сохранение множителей пересчитывает существующий P&L сделок по исполнениям и сохраняет
+              аннотации.
             </p>
             {failure && (
               <p role="alert" className="text-xs text-destructive">
@@ -142,7 +143,7 @@ function Settings() {
               </p>
             )}
             <Button onClick={save} disabled={!data}>
-              {saved ? "Saved ✓" : "Save"}
+              {saved ? "Сохранено ✓" : "Сохранить"}
             </Button>
           </CardContent>
         </Card>
@@ -151,19 +152,19 @@ function Settings() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Your data</CardTitle>
+            <CardTitle>Ваши данные</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
             <a href="/api/export" download="trade-journal-export.json">
               <Button variant="outline">
                 <Download />
-                Full backup (JSON)
+                Полная резервная копия (JSON)
               </Button>
             </a>
             <a href="/api/export?format=csv" download>
               <Button variant="outline">
                 <Download />
-                Trades (CSV)
+                Сделки (CSV)
               </Button>
             </a>
           </CardContent>

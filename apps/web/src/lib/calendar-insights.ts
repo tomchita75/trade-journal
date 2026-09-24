@@ -31,13 +31,13 @@ export function calendarInsights(calendar: CalendarMonth) {
   const breakevens = days.reduce((sum, d) => sum + d.breakevens, 0);
   const netPnl = days.reduce((sum, d) => sum + d.netPnl, 0);
   const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "Воскресенье",
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
   ].map((label, index) => {
     const matching = days.filter((day) => closingWeekday(day.date) === index);
     return {

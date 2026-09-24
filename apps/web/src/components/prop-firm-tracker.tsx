@@ -190,7 +190,7 @@ export function PropFirmTracker() {
   const money = (amount: number, code = selectedCurrency) =>
     privacy ? "••••" : code ? propMoney(amount, code) : "—";
   const name = (id: string | null) =>
-    data?.accounts.find((a) => a.id === id)?.name ?? "Shared firm cost";
+    data?.accounts.find((a) => a.id === id)?.name ?? "Общий расход фирмы";
   const query = search.toLowerCase().trim();
   const entries = (data?.entries ?? [])
     .filter(
@@ -304,14 +304,14 @@ export function PropFirmTracker() {
           })
         }
       >
-        {entry.voided ? "Restore" : "Void"}
+        {entry.voided ? "Восстановить" : "Аннулировать"}
       </Button>
     </div>
   );
   return (
     <div>
       <FilterBar
-        title="Prop firms"
+        title="Проп-фирмы"
         actions={
           <div className="flex flex-wrap gap-2">
             <Button
@@ -353,7 +353,7 @@ export function PropFirmTracker() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={switchDemo}>
-              {demo ? "Exit demo" : "Load demo data"}
+              {demo ? "Выйти из демо" : "Загрузить демо-данные"}
             </Button>
             <details className="relative">
               <summary className="cursor-pointer rounded-md border px-3 py-2 text-xs font-medium">
@@ -436,13 +436,13 @@ export function PropFirmTracker() {
               <summary className="cursor-pointer px-4 py-3 text-sm">
                 <span className="font-medium">Filters</span>
                 <span className="ml-3 text-xs text-muted-foreground">
-                  {firm || "All firms"} · {accountId ? name(accountId) : "All accounts"} ·{" "}
-                  {from || to ? `${from || "Start"} to ${to || "Today"}` : "All dates"}
+                  {firm || "Все фирмы"} · {accountId ? name(accountId) : "Все счета"} ·{" "}
+                  {from || to ? `${from || "Начало"} to ${to || "Сегодня"}` : "Все даты"}
                   {selectedCurrency ? ` · ${selectedCurrency}` : " · Choose currency"}
                 </span>
               </summary>
               <div className="grid gap-3 border-t p-4 sm:grid-cols-2 xl:grid-cols-5">
-                <Field label="Firm">
+                <Field label="Фирма">
                   <OptionSelect
                     value={firm}
                     onValueChange={(value) => {
@@ -458,7 +458,7 @@ export function PropFirmTracker() {
                     ))}
                   </OptionSelect>
                 </Field>
-                <Field label="Prop account">
+                <Field label="Проп-счёт">
                   <OptionSelect value={accountId} onValueChange={setAccountId}>
                     <option value="">All accounts & shared costs</option>
                     {data.accounts
@@ -471,10 +471,10 @@ export function PropFirmTracker() {
                       ))}
                   </OptionSelect>
                 </Field>
-                <Field label="Currency">
+                <Field label="Валюта">
                   <OptionSelect value={currency} onValueChange={setCurrency}>
                     <option value="">
-                      {currencies.length > 1 ? "Choose currency for totals" : "All currencies"}
+                      {currencies.length > 1 ? "Выберите валюту для итогов" : "Все валюты"}
                     </option>
                     {currencies.map((c) => (
                       <option key={c} value={c}>
@@ -483,17 +483,17 @@ export function PropFirmTracker() {
                     ))}
                   </OptionSelect>
                 </Field>
-                <Field label="Cash from">
+                <Field label="Денежные операции с">
                   <DatePicker
-                    label="Cash from date"
+                    label="Дата начала денежных операций"
                     value={from}
                     max={to || data.today}
                     onValueChange={setFrom}
                   />
                 </Field>
-                <Field label="Cash through">
+                <Field label="Денежные операции по">
                   <DatePicker
-                    label="Cash through date"
+                    label="Дата окончания денежных операций"
                     value={to}
                     min={from}
                     max={data.today}
@@ -572,7 +572,7 @@ export function PropFirmTracker() {
                   variant={tab === v ? "secondary" : "outline"}
                   onClick={() => setTab(v)}
                 >
-                  {v === "ledger" ? "Transactions" : label(v)}
+                  {v === "ledger" ? "Транзакции" : label(v)}
                 </Button>
               ))}
             </div>
@@ -609,7 +609,7 @@ export function PropFirmTracker() {
                               <EquityArea
                                 curve="stepAfter"
                                 currency={selectedCurrency}
-                                valueLabel="Net cash in selected period"
+                                valueLabel="Чистые деньги за выбранный период"
                                 data={cashTimeline(summaryCash).map((p) => ({
                                   t: p.date,
                                   cumNetPnl: p.net / 10 ** currencyDigits(selectedCurrency),
@@ -834,9 +834,9 @@ export function PropFirmTracker() {
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
                   <Input
-                    aria-label="Search prop records"
+                    aria-label="Поиск записей проп-фирм"
                     className="max-w-sm"
-                    placeholder="Search firm, account, reference or status"
+                    placeholder="Поиск фирмы, счёта, ссылки или статуса"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -946,11 +946,11 @@ export function PropFirmTracker() {
                                     id: a.id,
                                     revision: a.revision,
                                     value: !a.archived,
-                                    name: a.archived ? "Restore account" : "Archive account",
+                                    name: a.archived ? "Восстановить счёт" : "Архивировать счёт",
                                   })
                                 }
                               >
-                                {a.archived ? "Restore" : "Archive"}
+                                {a.archived ? "Восстановить" : "Архивировать"}
                               </Button>
                             </div>
                           </CardContent>
@@ -1048,12 +1048,12 @@ export function PropFirmTracker() {
                                         revision: row.entry.revision,
                                         value: !r.voided,
                                         name: r.voided
-                                          ? "Restore cash movement"
-                                          : "Void cash movement",
+                                          ? "Восстановить денежную операцию"
+                                          : "Аннулировать денежную операцию",
                                       })
                                     }
                                   >
-                                    {r.voided ? "Restore" : "Void"}
+                                    {r.voided ? "Восстановить" : "Аннулировать"}
                                   </Button>
                                 </div>
                               ))}
@@ -1115,7 +1115,7 @@ export function PropFirmTracker() {
                                   <p className="text-xs text-muted-foreground">Expected net</p>
                                 )}
                               </td>
-                              <td>{entry.voided ? "Voided" : label(entry.status)}</td>
+                              <td>{entry.voided ? "Аннулировано" : label(entry.status)}</td>
                               <td>{entryActions(entry)}</td>
                             </tr>
                           ))}

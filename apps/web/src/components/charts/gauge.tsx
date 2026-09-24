@@ -24,7 +24,7 @@ export function Gauge({
     <div
       className="journal-gauge flex min-w-0 flex-col items-center"
       role="img"
-      aria-label={`${label}: ${value === null ? "no data" : `${(ratio * 100).toFixed(1)}%`}`}
+      aria-label={`${label}: ${value === null ? "нет данных" : `${(ratio * 100).toFixed(1)}%`}`}
     >
       <svg width={size} height={size / 2 + 8} viewBox={`0 0 ${size} ${size / 2 + 8}`}>
         <path

@@ -28,13 +28,15 @@ export function Attachments({
           onClick={() => input.current?.click()}
         >
           <Paperclip />
-          {busy ? "Uploading…" : "Add attachment"}
+          {busy ? "Загрузка…" : "Добавить вложение"}
         </Button>
-        <span className="text-xs text-muted-foreground">Images or PDF · up to 8 MB each</span>
+        <span className="text-xs text-muted-foreground">
+          Изображения или PDF · до 8 МБ каждое
+        </span>
       </div>
       <input
         ref={input}
-        aria-label="Upload attachment"
+        aria-label="Загрузить вложение"
         type="file"
         accept="image/png,image/jpeg,image/webp,application/pdf"
         className="hidden"
@@ -54,7 +56,7 @@ export function Attachments({
               if (!r.ok) throw new Error(result.error);
             }
           } catch (err) {
-            setFailure(err instanceof Error ? err.message : "Upload failed.");
+            setFailure(err instanceof Error ? err.message : "Ошибка загрузки.");
           } finally {
             setBusy(false);
             if (input.current) input.current.value = "";
@@ -88,15 +90,15 @@ export function Attachments({
               </a>
             </HoverHint>
             <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{Math.round(a.size / 1024)} KB</span>
+              <span>{Math.round(a.size / 1024)} КБ</span>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6"
-                aria-label={`Remove ${a.name}`}
+                aria-label={`Удалить ${a.name}`}
                 onClick={async () => {
-                  if (!confirm(`Remove ${a.name}?`)) return;
+                  if (!confirm(`Удалить ${a.name}?`)) return;
                   try {
                     await postJson(`/api/attachments/${a.id}`, undefined, "DELETE");
                     refresh();

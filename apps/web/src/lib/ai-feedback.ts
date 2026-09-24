@@ -10,9 +10,9 @@ export interface AiFeedback {
 export function aiFeedback(message: string): AiFeedback {
   if (/^No (?:closed )?trades match/.test(message))
     return {
-      title: "No matching trades",
+      title: "Нет подходящих сделок",
       description:
-        "There are no trades to analyze in this selection. Adjust the accounts, dates or other journal filters.",
+        "В этой выборке нет сделок для анализа. Измените счета, даты или другие фильтры журнала.",
       tone: "info",
     };
   if (
@@ -21,25 +21,25 @@ export function aiFeedback(message: string): AiFeedback {
     )
   )
     return {
-      title: "Check your journal filters",
+      title: "Проверьте фильтры журнала",
       description:
-        "The selected scope is no longer valid. Update the accounts and filters before trying again.",
+        "Выбранная область больше недействительна. Обновите счета и фильтры перед повторной попыткой.",
       tone: "info",
     };
   if (/^Journal timezone changed/.test(message))
     return {
-      title: "Refresh your journal",
+      title: "Обновите журнал",
       description:
-        "The journal timezone changed. Refresh this page so the displayed dates and AI analysis agree.",
+        "Часовой пояс журнала изменился. Обновите эту страницу, чтобы отображаемые даты и анализ AI совпадали.",
       tone: "info",
     };
   if (/AI is not configured/i.test(message))
     return {
-      title: "Set up AI to continue",
+      title: "Настройте AI для продолжения",
       description:
-        "Connect an Anthropic or OpenAI API key in Settings to ask questions, generate recaps, and review trades.",
+        "Подключите ключ API Anthropic или OpenAI в настройках, чтобы задавать вопросы, генерировать обзоры и анализировать сделки.",
       tone: "info",
-      action: { label: "Set up AI", href: "/settings#ai-settings" },
+      action: { label: "Настроить AI", href: "/settings#ai-settings" },
     };
   if (
     /invalid.*(?:api.?key|x-api-key)|incorrect api key|authentication_error|invalid_api_key/i.test(
@@ -47,11 +47,11 @@ export function aiFeedback(message: string): AiFeedback {
     )
   )
     return {
-      title: "Check your AI connection",
+      title: "Проверьте подключение AI",
       description:
-        "Your AI provider couldn’t verify your key or permissions. Review them in Settings, then try again.",
+        "Ваш AI-провайдер не смог проверить ваш ключ или разрешения. Проверьте их в настройках, затем попробуйте снова.",
       tone: "error",
-      action: { label: "Review AI settings", href: "/settings#ai-settings" },
+      action: { label: "Проверить настройки AI", href: "/settings#ai-settings" },
     };
   if (
     /credit balance|billing|insufficient.*(?:credit|quota)|exceeded your current quota/i.test(
@@ -59,57 +59,57 @@ export function aiFeedback(message: string): AiFeedback {
     )
   )
     return {
-      title: "Your AI account needs attention",
+      title: "Ваш аккаунт AI требует внимания",
       description:
-        "Check the billing, credit balance, or quota on your AI provider account, then try again.",
+        "Проверьте биллинг, кредитный баланс или квоту в аккаунте AI-провайдера, затем попробуйте снова.",
       tone: "info",
     };
   if (/model unavailable|model_not_found/i.test(message))
     return {
-      title: "Check your AI model",
-      description: "Check the model ID and your provider account’s access in Settings.",
+      title: "Проверьте вашу AI-модель",
+      description: "Проверьте ID модели и доступ аккаунта провайдера в настройках.",
       tone: "error",
-      action: { label: "Review AI settings", href: "/settings#ai-settings" },
+      action: { label: "Проверить настройки AI", href: "/settings#ai-settings" },
     };
   if (/rate.limit|too many requests|overloaded/i.test(message))
     return {
-      title: "AI is temporarily busy",
-      description: "Please wait a moment before trying again. Your journal data hasn’t changed.",
+      title: "AI временно занят",
+      description: "Пожалуйста, подождите немного перед повторной попыткой. Данные вашего журнала не изменились.",
       tone: "info",
       retry: true,
     };
   if (/journal is empty/i.test(message))
     return {
-      title: "Add trades to get started",
+      title: "Добавьте сделки для начала",
       description:
-        "AI insights use your journal history. Import your trades, then ask your question again.",
+        "AI-инсайты используют историю вашего журнала. Импортируйте сделки, затем задайте вопрос снова.",
       tone: "info",
-      action: { label: "Import trades", href: "/import" },
+      action: { label: "Импортировать сделки", href: "/import" },
     };
   if (/No closed trades on this day/i.test(message))
     return {
-      title: "No trades to recap yet",
+      title: "Пока нет сделок для обзора",
       description:
-        "A recap needs at least one closed trade on this day. You can still write your own day note.",
+        "Для обзора нужна хотя бы одна закрытая сделка в этот день. Вы всё ещё можете написать свою дневную заметку.",
       tone: "info",
     };
   if (/Unauthorized/i.test(message))
     return {
-      title: "Please sign in again",
-      description: "Your session may have expired. Sign in to continue using your journal.",
+      title: "Пожалуйста, войдите снова",
+      description: "Возможно, ваша сессия истекла. Войдите, чтобы продолжить использование журнала.",
       tone: "info",
-      action: { label: "Sign in", href: "/login" },
+      action: { label: "Войти", href: "/login" },
     };
   if (/failed to fetch|network|timeout|timed out|connection/i.test(message))
     return {
-      title: "Couldn’t connect to AI",
-      description: "Check your connection and try again. Your journal data hasn’t changed.",
+      title: "Не удалось подключиться к AI",
+      description: "Проверьте подключение и попробуйте снова. Данные вашего журнала не изменились.",
       tone: "error",
       retry: true,
     };
   return {
-    title: "Couldn’t complete the AI request",
-    description: "Please try again in a moment. If this continues, check your AI settings.",
+    title: "Не удалось выполнить запрос AI",
+    description: "Пожалуйста, попробуйте снова через некоторое время. Если это продолжится, проверьте настройки AI.",
     tone: "error",
     retry: true,
   };

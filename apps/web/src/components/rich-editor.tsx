@@ -42,18 +42,18 @@ export function Markdown({ children }: { children: string }) {
 const BUILT_INS = [
   {
     id: "pre",
-    name: "Pre-market plan",
+    name: "Предварительный план",
     content:
       "## Market context\n\n## Setups to watch\n\n## Risk limits\n- [ ] Confirm daily risk limit\n- [ ] Check scheduled events\n\n## My intention\n",
   },
   {
     id: "review",
-    name: "Trade review",
+    name: "Обзор сделки",
     content: "## Setup and thesis\n\n## Execution\n\n## What worked\n\n## What I will change\n",
   },
   {
     id: "weekly",
-    name: "Weekly review",
+    name: "Еженедельный обзор",
     content:
       "## Wins this week\n\n## Repeated mistakes\n\n## Rules I followed\n\n## One improvement for next week\n",
   },
@@ -64,7 +64,7 @@ export interface RichEditorHandle {
 export function RichEditor({
   value,
   onChange,
-  placeholder = "Write your review…",
+  placeholder = "Напишите ваш обзор…",
   defaultMode,
   mode,
   onModeChange,
@@ -141,7 +141,7 @@ export function RichEditor({
       <div className="flex flex-wrap items-center gap-1">
         {showModeToggle && (
           <Button type="button" variant="outline" size="sm" onClick={() => setPreview(!preview)}>
-            {preview ? "Edit" : "Preview"}
+            {preview ? "Редактировать" : "Предпросмотр"}
           </Button>
         )}
         {!preview && (
@@ -152,7 +152,7 @@ export function RichEditor({
               size="sm"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => formatInline("**")}
-              aria-label="Bold"
+              aria-label="Жирный"
             >
               B
             </Button>
@@ -162,7 +162,7 @@ export function RichEditor({
               size="sm"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => formatInline("*")}
-              aria-label="Italic"
+              aria-label="Курсив"
             >
               <i>I</i>
             </Button>
@@ -171,7 +171,7 @@ export function RichEditor({
               variant="ghost"
               size="sm"
               onClick={() => insert("\n## ")}
-              aria-label="Heading"
+              aria-label="Заголовок"
             >
               H2
             </Button>
@@ -180,21 +180,21 @@ export function RichEditor({
               variant="ghost"
               size="sm"
               onClick={() => insert("\n- ")}
-              aria-label="Bullet list"
+              aria-label="Маркированный список"
             >
-              List
+              Список
             </Button>
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => insert("\n- [ ] ")}
-              aria-label="Checklist"
+              aria-label="Чек-лист"
             >
-              Checklist
+              Чек-лист
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={() => setLinkOpen(!linkOpen)}>
-              Link trade
+              Связать сделку
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -202,14 +202,14 @@ export function RichEditor({
                   type="button"
                   variant="outline"
                   size="sm"
-                  aria-label="Insert note template"
+                  aria-label="Вставить шаблон заметки"
                   className="gap-2 rounded-lg"
                 >
-                  Insert template…
+                  Вставить шаблон…
                   <ChevronDown className="size-3.5 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" aria-label="Note templates">
+              <DropdownMenuContent align="start" aria-label="Шаблоны заметок">
                 {[...BUILT_INS, ...(data?.templates ?? [])].map((template) => (
                   <DropdownMenuItem
                     key={template.id}
@@ -230,7 +230,7 @@ export function RichEditor({
               variant="ghost"
               disabled={!value}
               onClick={async () => {
-                const name = prompt("Name this note template");
+                const name = prompt("Назовите этот шаблон заметки");
                 if (!name) return;
                 try {
                   await postJson("/api/workspace/templates", { name, content: value });
@@ -240,7 +240,7 @@ export function RichEditor({
                 }
               }}
             >
-              Save template
+              Сохранить шаблон
             </Button>
           </>
         )}
@@ -248,8 +248,8 @@ export function RichEditor({
       {linkOpen && !preview && (
         <div className="space-y-2 rounded-md border p-2">
           <input
-            aria-label="Find trade by symbol, date or account"
-            placeholder="Search symbol, date or account"
+            aria-label="Поиск сделки по тикеру, дате или счёту"
+            placeholder="Поиск тикера, даты или счёта"
             className={fieldClass}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -257,7 +257,7 @@ export function RichEditor({
           <div className="max-h-40 overflow-y-auto">
             {tradesLoading && (
               <p role="status" className="text-xs text-muted-foreground">
-                Loading trades…
+                Загрузка сделок…
               </p>
             )}
             {tradeError && (
@@ -282,11 +282,11 @@ export function RichEditor({
                 </button>
               ))}
             {!tradesLoading && !tradeError && trades?.trades.length === 0 && (
-              <p className="text-xs text-muted-foreground">No matching trades.</p>
+              <p className="text-xs text-muted-foreground">Нет подходящих сделок.</p>
             )}
             {!tradesLoading && !tradeError && trades?.hasMore && (
               <p className="text-xs text-muted-foreground">
-                Showing the latest 50 matches. Search by date or account to find older trades.
+                Показаны последние 50 совпадений. Ищите по дате или счёту, чтобы найти более старые сделки.
               </p>
             )}
           </div>
@@ -294,12 +294,12 @@ export function RichEditor({
       )}
       {preview ? (
         <div className="min-h-40 rounded-md border p-3">
-          <Markdown>{value || "Nothing written yet."}</Markdown>
+          <Markdown>{value || "Пока ничего не написано."}</Markdown>
         </div>
       ) : (
         <textarea
           ref={ref}
-          aria-label="Review notes"
+          aria-label="Заметки обзора"
           className={`${fieldClass} min-h-48 resize-y font-mono text-[13px]`}
           value={value}
           onChange={(e) => onChange(e.target.value)}

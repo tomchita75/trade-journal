@@ -51,7 +51,7 @@ export function estimateExcursions(
     if (distance > 0.2 * Math.max(Math.abs(bar.close), Math.abs(fill.price), 1e-9)) {
       return {
         ...empty(
-          "Recorded fills differ by more than 20% from matching market candles. Check for demo trades, a different instrument, quote currency or price adjustment basis. MAE/MFE estimates and fill labels are unavailable until the prices are reconciled.",
+          "Записанные филлы отличаются более чем на 20% от соответствующих рыночных свечей. Проверьте демо-сделки, другой инструмент, валюту котировки или базис корректировки цен. Оценки MAE/MFE и метки филлов недоступны, пока цены не согласованы.",
         ),
         priceBasisMismatch: true,
       };
@@ -59,16 +59,16 @@ export function estimateExcursions(
   }
   if (!basisConfirmed)
     return empty(
-      "Confirm that the provider instrument, price basis and quote currency match your fills and account currency to calculate estimates.",
+      "Подтвердите, что инструмент провайдера, базис цены и валюта котировки соответствуют вашим филлам и валюте счёта для расчёта оценок.",
     );
-  if (!trade.closedAt) return empty("Estimates are available for closed trades only.");
+  if (!trade.closedAt) return empty("Оценки доступны только для закрытых сделок.");
   if (history.truncated)
-    return empty("History is truncated. Load a coarser resolution for estimates.");
+    return empty("История обрезана. Загрузите более грубое разрешение для оценок.");
   const multiplier =
     trade.contractMultiplier ?? (["equity", "crypto"].includes(trade.assetClass ?? "") ? 1 : null);
   if (multiplier === null || !Number.isFinite(multiplier) || multiplier <= 0)
     return empty(
-      "Set this symbol's contract multiplier in Settings before calculating monetary estimates.",
+      "Укажите множитель контракта этого символа в настройках перед расчётом денежных оценок.",
     );
   const open = Date.parse(trade.openedAt),
     close = Date.parse(trade.closedAt);
@@ -93,13 +93,13 @@ export function estimateExcursions(
     sorted[0]!.time !== open ||
     sorted.at(-1)!.time !== close
   )
-    return empty("Execution timestamps or quantities do not describe a complete position cycle.");
+    return empty("Временные метки исполнения или количества не описывают полный цикл позиции.");
   const bars = history.bars.filter((bar) => bar.time < close && bar.time + step > open);
   if (!bars.length || bars[0]!.time > open || bars.at(-1)!.time + step < close)
-    return empty("Market history does not cover both entry and exit. Estimates are unavailable.");
+    return empty("История рынка не покрывает вход и выход. Оценки недоступны.");
   if (bars.some((bar, index) => index > 0 && bar.time - bars[index - 1]!.time > step))
     warnings.push(
-      "History contains gaps, which may be closed sessions or missing data. Estimates use observed candles only.",
+      "История содержит пробелы, которые могут быть закрытыми сессиями или отсутствующими данными. Оценки используют только наблюдаемые свечи.",
     );
   let position = 0,
     cash = 0,
@@ -127,7 +127,7 @@ export function estimateExcursions(
     while (index < sorted.length && sorted[index]!.time <= bar.time) {
       if (!apply(sorted[index++]!))
         return empty(
-          "A reversing execution spans multiple trades. Excursion estimates are unavailable for this cycle.",
+          "Разворачивающееся исполнение охватывает несколько сделок. Оценки экскурсии недоступны для этого цикла.",
         );
     }
     const nextFill = sorted[index]?.time ?? Infinity;
@@ -147,24 +147,24 @@ export function estimateExcursions(
   while (index < sorted.length)
     if (!apply(sorted[index++]!))
       return empty(
-        "A reversing execution spans multiple trades. Excursion estimates are unavailable for this cycle.",
+        "Разворачивающееся исполнение охватывает несколько сделок. Оценки экскурсии недоступны для этого цикла.",
       );
   if (Math.abs(position) > epsilon)
     return empty(
-      "The recorded fills do not return this position to flat. Estimates are unavailable.",
+      "Записанные филлы не возвращают эту позицию в ноль. Оценки недоступны.",
     );
   if (!sampledBars)
     return empty(
-      "No complete candle falls between fills. Choose a finer resolution; fill prices alone cannot estimate excursions.",
+      "Ни одна полная свеча не попадает между филлами. Выберите более мелкое разрешение; только цен филлов недостаточно для оценки экскурсий.",
     );
   if (excludedBars)
     warnings.push(
-      `${excludedBars} candles straddle a fill or trade boundary and were excluded; excursions may be understated.`,
+      `${excludedBars} свечей пересекают границу филла или сделки и были исключены; экскурсии могут быть занижены.`,
     );
   warnings.push(
-    "Estimated gross position P&L, including realized partial exits and remaining exposure. Fees and currency conversion are excluded; the order of highs and lows within a candle is unknown.",
+    "Оценочный валовый P&L позиции, включая реализованные частичные выходы и оставшуюся экспозицию. Комиссии и конвертация валюты исключены; порядок максимумов и минимумов внутри свечи неизвестен.",
   );
   if (![minimum, maximum].every(Number.isFinite))
-    return empty("The position values exceed the supported numeric range.");
+    return empty("Значения позиции превышают поддерживаемый числовой диапазон.");
   return { mae: Math.abs(minimum), mfe: maximum, sampledBars, excludedBars, warnings };
 }

@@ -33,22 +33,22 @@ import { Button } from "./ui/button";
 import { HoverHint } from "./ui/tooltip";
 
 const NAV = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/journal", label: "Daily journal", icon: NotebookPen },
-  { href: "/trades", label: "Trades", icon: ListOrdered },
-  { href: "/reports", label: "Reports", icon: BarChart3 },
-  { href: "/prop-firms", label: "Prop firms", icon: Landmark },
-  { href: "/notebook", label: "Notebook", icon: BookText },
-  { href: "/playbooks", label: "Playbooks", icon: BookOpen },
-  { href: "/progress", label: "Progress", icon: ListChecks },
-  { href: "/missed", label: "Missed trades", icon: BookmarkPlus },
+  { href: "/", label: "Панель", icon: LayoutDashboard },
+  { href: "/calendar", label: "Календарь", icon: CalendarDays },
+  { href: "/journal", label: "Ежедневный журнал", icon: NotebookPen },
+  { href: "/trades", label: "Сделки", icon: ListOrdered },
+  { href: "/reports", label: "Отчёты", icon: BarChart3 },
+  { href: "/prop-firms", label: "Проп-фирмы", icon: Landmark },
+  { href: "/notebook", label: "Заметки", icon: BookText },
+  { href: "/playbooks", label: "Плейбуки", icon: BookOpen },
+  { href: "/progress", label: "Прогресс", icon: ListChecks },
+  { href: "/missed", label: "Пропущенные сделки", icon: BookmarkPlus },
 ] as const;
 
 const NAV_SETUP = [
-  { href: "/import", label: "Import", icon: Import },
-  { href: "/accounts", label: "Accounts", icon: Wallet },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/import", label: "Импорт", icon: Import },
+  { href: "/accounts", label: "Счета", icon: Wallet },
+  { href: "/settings", label: "Настройки", icon: Settings },
 ] as const;
 
 const SIDEBAR_COLLAPSED_KEY = "journal-sidebar-collapsed-v1";
@@ -134,7 +134,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       try {
         localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next));
       } catch {
-        // The interaction still works when storage is unavailable.
+        // Взаимодействие работает даже при недоступности хранилища.
       }
       return next;
     });
@@ -148,7 +148,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   if (pathname === "/login") return <>{children}</>;
   const navigation = (collapsed = false) => (
     <nav
-      aria-label="Journal navigation"
+      aria-label="Навигация журнала"
       className="journal-sidebar-navigation min-h-0 flex-1 space-y-0.5 overflow-x-hidden overflow-y-auto overscroll-contain p-2"
       onClick={(event) => {
         if ((event.target as HTMLElement).closest("a")) setMenuOpen(false);
@@ -180,7 +180,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const footer = (
     <div className="journal-sidebar-footer space-y-1 border-t p-3 text-xs text-muted-foreground">
       <div>
-        Open source ·{" "}
+        Открытый исходный код ·{" "}
         <a
           href="https://github.com/LuxAlgo/trade-journal"
           className="underline underline-offset-2 hover:text-foreground"
@@ -190,7 +190,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           GitHub
         </a>
       </div>
-      <div>Not investment advice.</div>
+      <div>Не является инвестиционной рекомендацией.</div>
     </div>
   );
   return (
@@ -202,7 +202,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               variant="ghost"
               size="icon"
               className="h-9 w-9 shrink-0"
-              aria-label="Open navigation"
+              aria-label="Открыть навигацию"
             >
               <Menu />
             </Button>
@@ -223,7 +223,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                     variant="ghost"
                     size="icon"
                     className="ml-auto h-8 w-8"
-                    aria-label="Close navigation"
+                    aria-label="Закрыть навигацию"
                   >
                     <X />
                   </Button>
@@ -265,10 +265,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             size="icon"
             className="journal-sidebar-trigger absolute h-7 w-7 rounded-full bg-background shadow-sm"
             onClick={toggleSidebar}
-            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={sidebarCollapsed ? "Развернуть сайдбар" : "Свернуть сайдбар"}
             aria-expanded={!sidebarCollapsed}
             aria-keyshortcuts="Meta+B Control+B"
-            title={`${sidebarCollapsed ? "Expand" : "Collapse"} sidebar (⌘B)`}
+            title={`${sidebarCollapsed ? "Развернуть" : "Свернуть"} сайдбар (⌘B)`}
           >
             {sidebarCollapsed ? (
               <PanelLeftOpen className="h-3.5 w-3.5" />

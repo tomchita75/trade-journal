@@ -26,7 +26,7 @@ export async function buildReviewPdf(doc: ReviewDocument, fontBytes: ArrayBuffer
   ];
   if (missing.length)
     throw new Error(
-      `PDF font does not support these characters: ${missing.slice(0, 8).join(" ")}. Remove them for this export, or export a PNG review.`,
+      `Шрифт PDF не поддерживает эти символы: ${missing.slice(0, 8).join(" ")}. Удалите их для этого экспорта или экспортируйте как PNG.`,
     );
   pdf.setTitle(doc.title);
   pdf.setCreator("Trade Journal");
@@ -68,7 +68,7 @@ export async function buildReviewPdf(doc: ReviewDocument, fontBytes: ArrayBuffer
   }
   const pages = pdf.getPages();
   pages.forEach((p, i) =>
-    p.drawText(`Trade Journal  |  ${i + 1} / ${pages.length}`, {
+    p.drawText(`Журнал сделок  |  ${i + 1} / ${pages.length}`, {
       x: 48,
       y: 30,
       size: 8,
@@ -80,7 +80,7 @@ export async function buildReviewPdf(doc: ReviewDocument, fontBytes: ArrayBuffer
 }
 export async function exportPdf(doc: ReviewDocument) {
   const response = await fetch("/fonts/NotoSans-Regular.ttf");
-  if (!response.ok) throw new Error("Could not load the PDF font.");
+  if (!response.ok) throw new Error("Не удалось загрузить шрифт PDF.");
   const bytes = await buildReviewPdf(doc, await response.arrayBuffer());
   return [
     {
@@ -97,7 +97,7 @@ export async function exportPng(doc: ReviewDocument) {
   const t = readVizTokens();
   const canvas = document.createElement("canvas"),
     ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Image export is unavailable in this browser.");
+  if (!ctx) throw new Error("Экспорт изображений недоступен в этом браузере.");
   canvas.width = 1200;
   ctx.font = "24px Arial";
   const lines: string[] = [];
@@ -124,7 +124,7 @@ export async function exportPng(doc: ReviewDocument) {
     ctx.fillRect(0, 0, 1200, 8);
     ctx.fillStyle = t.inkMuted;
     ctx.font = "22px Arial";
-    ctx.fillText(`TRADE JOURNAL${pages > 1 ? ` · ${i + 1}/${pages}` : ""}`, 80, 70);
+    ctx.fillText(`ЖУРНАЛ СДЕЛОК${pages > 1 ? ` · ${i + 1}/${pages}` : ""}`, 80, 70);
     ctx.fillStyle = t.foreground;
     ctx.font = "bold 38px Arial";
     ctx.fillText(doc.title, 80, 130, 1040);
@@ -136,7 +136,7 @@ export async function exportPng(doc: ReviewDocument) {
     chunk.forEach((line, j) => ctx.fillText(line, 80, 244 + j * 38));
     const blob = await new Promise<Blob>((resolve, reject) =>
       canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error("Image export failed."))),
+        (b) => (b ? resolve(b) : reject(new Error("Экспорт изображения не удался."))),
         "image/png",
       ),
     );

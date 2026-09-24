@@ -66,7 +66,7 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
       });
       onSaved();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Couldn’t save the trade. Try again.");
+      setError(cause instanceof Error ? cause.message : "Не удалось сохранить сделку. Попробуйте снова.");
     } finally {
       setBusy(false);
     }
@@ -77,7 +77,7 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
       <AccountPicker value={accountId} onChange={setAccountId} kind="manual" />
       <div>
         <Label htmlFor={`${fieldId}-symbol`} className="mb-1 block text-xs text-muted-foreground">
-          Symbol
+          Тикер
         </Label>
         <Input
           id={`${fieldId}-symbol`}
@@ -92,9 +92,9 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
             key={index}
             className="manual-execution-row grid min-w-0 gap-2 rounded-lg border p-3"
           >
-            <legend className="px-1 text-xs text-muted-foreground">Execution {index + 1}</legend>
+            <legend className="px-1 text-xs text-muted-foreground">Исполнение {index + 1}</legend>
             <label className="manual-execution-date grid min-w-0 gap-1 text-xs text-muted-foreground">
-              Date & time
+              Дата и время
               <Input
                 type="datetime-local"
                 value={leg.datetime}
@@ -102,7 +102,7 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
               />
             </label>
             <div className="grid min-w-0 gap-1 text-xs text-muted-foreground">
-              <span id={`${fieldId}-execution-side-${index}`}>Side</span>
+              <span id={`${fieldId}-execution-side-${index}`}>Сторона</span>
               <Select
                 value={leg.side}
                 onValueChange={(value) => setLeg(index, { side: value as "buy" | "sell" })}
@@ -111,25 +111,25 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="buy">Buy</SelectItem>
-                  <SelectItem value="sell">Sell</SelectItem>
+                  <SelectItem value="buy">Покупка</SelectItem>
+                  <SelectItem value="sell">Продажа</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <label className="grid min-w-0 gap-1 text-xs text-muted-foreground">
-              Quantity
+              Количество
               <Input
-                placeholder="qty"
+                placeholder="кол-во"
                 inputMode="decimal"
                 value={leg.quantity}
                 onChange={(event) => setLeg(index, { quantity: event.target.value })}
               />
             </label>
             <label className="grid min-w-0 gap-1 text-xs text-muted-foreground">
-              Price
+              Цена
               <MonetaryField>
                 <Input
-                  placeholder="price"
+                  placeholder="цена"
                   inputMode="decimal"
                   value={leg.price}
                   onChange={(event) => setLeg(index, { price: event.target.value })}
@@ -137,10 +137,10 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
               </MonetaryField>
             </label>
             <label className="grid min-w-0 gap-1 text-xs text-muted-foreground">
-              Fee
+              Комиссия
               <MonetaryField>
                 <Input
-                  placeholder="fee"
+                  placeholder="комиссия"
                   inputMode="decimal"
                   value={leg.fee}
                   onChange={(event) => setLeg(index, { fee: event.target.value })}
@@ -151,19 +151,19 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
         ))}
       </div>
       <div className="space-y-1">
-        <Label htmlFor={`${fieldId}-notes`}>Notes (optional)</Label>
+        <Label htmlFor={`${fieldId}-notes`}>Заметки (необязательно)</Label>
         <textarea
           id={`${fieldId}-notes`}
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
           maxLength={100000}
           rows={4}
-          placeholder="Your setup, why you took the trade, or what you learned…"
+          placeholder="Ваш сетап, почему вы вошли в сделку или что вынесли из неё…"
           className="flex w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
         />
         <p className="text-xs text-muted-foreground">
-          Markdown supported. Notes are saved with the trade; existing notes are kept when adding to
-          an open position.
+          Поддерживается Markdown. Заметки сохраняются вместе со сделкой; существующие заметки
+          сохраняются при добавлении к открытой позиции.
         </p>
       </div>
       {error && (
@@ -182,16 +182,16 @@ export function ManualTradeEntry({ onSaved }: { onSaved: () => void }) {
             ])
           }
         >
-          Add execution
+          Добавить исполнение
         </Button>
         <Button size="sm" onClick={save} disabled={!valid || busy}>
-          {busy ? "Saving…" : "Save trade"}
+          {busy ? "Сохранение…" : "Сохранить сделку"}
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        Dates and times use your device’s timezone. Executions matching an open position on{" "}
-        {symbol || "the symbol"} are stitched into round trips automatically (
-        {fmtNumber(legs.filter((leg) => leg.datetime).length, 0)} legs so far).
+        Даты и время используют часовой пояс вашего устройства. Исполнения, совпадающие с открытой
+        позицией по {symbol || "тикеру"}, автоматически объединяются в полные сделки (
+        {fmtNumber(legs.filter((leg) => leg.datetime).length, 0)} исполнений на данный момент).
       </p>
     </fieldset>
   );

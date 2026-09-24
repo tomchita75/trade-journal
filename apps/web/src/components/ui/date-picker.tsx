@@ -10,7 +10,7 @@ import { formatDateInput, parseDateInput } from "@/lib/date-input";
 
 // The calendar is loaded on demand, not in every page's initial filter-bar bundle.
 const Calendar = dynamic(() => import("./calendar").then((module) => module.Calendar), {
-  loading: () => <div role="status" aria-label="Loading calendar" className="h-[300px]" />,
+  loading: () => <div role="status" aria-label="Загрузка календаря" className="h-[300px]" />,
 });
 
 export function DatePicker({
@@ -79,7 +79,7 @@ export function DatePicker({
             <button
               type="button"
               disabled={disabled}
-              aria-label={`Choose ${label.toLowerCase()} date`}
+              aria-label={`Выбрать дату: ${label.toLowerCase()}`}
               className="absolute top-0 right-0 flex size-9 items-center justify-center rounded-r-md text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             >
               <CalendarDays aria-hidden="true" className="size-4" />
@@ -87,15 +87,15 @@ export function DatePicker({
           </Popover.Trigger>
           {invalid && (
             <span id={errorId} role="alert" className="mt-1 block text-xs text-destructive">
-              Enter a valid date (YYYY-MM-DD){max ? ` on or before ${max}` : ""}
-              {min ? ` on or after ${min}` : ""}.
+              Введите корректную дату (YYYY-MM-DD){max ? ` не позднее ${max}` : ""}
+              {min ? ` не ранее ${min}` : ""}.
             </span>
           )}
         </span>
       </Popover.Anchor>
       <Popover.Portal>
         <Popover.Content
-          aria-label={`${label} calendar`}
+          aria-label={`${label} календарь`}
           align="start"
           sideOffset={8}
           collisionPadding={12}
@@ -111,7 +111,7 @@ export function DatePicker({
           />
           <div className="mt-3 flex items-center justify-between border-t pt-2">
             <Button variant="ghost" size="sm" disabled={!draft} onClick={() => select("")}>
-              Clear
+              Очистить
             </Button>
             <Button
               variant="ghost"
@@ -119,7 +119,7 @@ export function DatePicker({
               disabled={!allowed(today)}
               onClick={() => select(today)}
             >
-              Today
+              Сегодня
             </Button>
           </div>
         </Popover.Content>

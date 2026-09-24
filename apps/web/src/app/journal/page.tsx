@@ -22,7 +22,7 @@ interface JournalDay {
 }
 
 const PAGE_SIZE = 50;
-const weekdayFormatter = new Intl.DateTimeFormat("en-US", {
+const weekdayFormatter = new Intl.DateTimeFormat("ru-RU", {
   weekday: "long",
   timeZone: "UTC",
 });
@@ -47,13 +47,13 @@ function Journal() {
   return (
     <div>
       <FilterBar
-        title="Daily journal"
+        title="Ежедневный журнал"
         actions={
           <Link
             href={`/journal/${dayKeyOf(new Date().toISOString(), timeZone)}?${query}`}
             className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
           >
-            View my day
+            Открыть мой день
           </Link>
         }
       />
@@ -62,17 +62,17 @@ function Journal() {
           <div role="alert" className="space-y-2 text-sm text-destructive">
             <p>{error}</p>
             <Button variant="outline" onClick={refresh}>
-              Try again
+              Попробовать снова
             </Button>
           </div>
         ) : !data ? (
-          <div role="status" aria-label="Loading journal">
+          <div role="status" aria-label="Загрузка журнала">
             <Skeleton className="h-48" />
           </div>
         ) : null}
         {data?.days.length === 0 && (
           <p className="py-16 text-center text-sm text-muted-foreground">
-            No trading days yet — import trades or write your first day note.
+            Торговых дней пока нет — импортируйте сделки или напишите первую заметку дня.
           </p>
         )}
         {data?.days.slice(0, limit).map((day) => (
@@ -89,26 +89,26 @@ function Journal() {
                   <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 gap-y-2 text-sm">
                     <Pnl value={day.stats.netPnl} className="w-24 font-semibold" />
                     <span className="text-muted-foreground">
-                      {day.stats.trades} trade{day.stats.trades === 1 ? "" : "s"}
+                      {day.stats.trades} сдел{day.stats.trades === 1 ? "ка" : day.stats.trades >= 2 && day.stats.trades <= 4 ? "ки" : "ок"}
                     </span>
                     <span className="text-muted-foreground">
                       {fmtPercent(
                         day.stats.trades > 0 ? day.stats.wins / day.stats.trades : null,
                         0,
                       )}{" "}
-                      win
+                      побед
                     </span>
                     <span className="text-muted-foreground">
-                      {day.stats.wins}W / {day.stats.losses}L
+                      {day.stats.wins}П / {day.stats.losses}У
                     </span>
                   </div>
                 ) : (
-                  <div className="flex-1 text-sm text-muted-foreground">No trades</div>
+                  <div className="flex-1 text-sm text-muted-foreground">Нет сделок</div>
                 )}
                 {day.hasNote && (
                   <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <NotebookPen className="h-3.5 w-3.5" />
-                    note
+                    заметка
                   </span>
                 )}
               </CardContent>
@@ -118,7 +118,7 @@ function Journal() {
         {data && data.days.length > PAGE_SIZE && (
           <div className="flex flex-wrap items-center justify-between gap-3 py-2 text-xs text-muted-foreground">
             <span role="status">
-              Showing {Math.min(limit, data.days.length)} of {data.days.length} days
+              Показано {Math.min(limit, data.days.length)} из {data.days.length} дн.
             </span>
             {limit < data.days.length && (
               <Button
@@ -126,7 +126,7 @@ function Journal() {
                 size="sm"
                 onClick={() => setVisibleWindow({ query, limit: limit + PAGE_SIZE })}
               >
-                Show older days
+                Показать старые дни
               </Button>
             )}
           </div>

@@ -126,7 +126,7 @@ function Form({
           </p>
         )}
         <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : "Save record"}
+          {busy ? "Сохранение…" : "Сохранить запись"}
         </Button>
       </form>
     </>
@@ -198,12 +198,12 @@ function AccountForm({
     <Form
       title={
         old
-          ? "Edit prop account"
+          ? "Редактировать проп-счёт"
           : modal.parent
-            ? "Track next attempt or phase"
-            : "Track a prop account"
+            ? "Отследить следующую попытку или фазу"
+            : "Отследить проп-счёт"
       }
-      description="Keep each evaluation, reset attempt and funding phase as its own record. Account size is nominal capital, not money you spent."
+      description="Каждая оценка, попытка сброса и фаза финансирования — отдельная запись. Размер счёта — номинальный капитал, не потраченные деньги."
       busy={busy}
       error={error}
       submit={() =>
@@ -211,9 +211,9 @@ function AccountForm({
       }
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        {input("firm", "Firm name", true)}
-        {input("name", "Account / attempt name", true)}
-        <Field label="Program">
+        {input("firm", "Название фирмы", true)}
+        {input("name", "Название счёта / попытки", true)}
+        <Field label="Программа">
           <OptionSelect
             value={values.program}
             onValueChange={(program) => set({ ...values, program })}
@@ -225,7 +225,7 @@ function AccountForm({
             ))}
           </OptionSelect>
         </Field>
-        <Field label="Status">
+        <Field label="Статус">
           <OptionSelect
             value={values.status}
             onValueChange={(status) =>
@@ -244,27 +244,27 @@ function AccountForm({
             ))}
           </OptionSelect>
         </Field>
-        {input("currency", "Currency code", true)}
-        {input("size", "Nominal account size (optional)")}
-        <Field label="Opened on">
+        {input("currency", "Код валюты", true)}
+        {input("size", "Номинальный размер счёта (необязательно)")}
+        <Field label="Открыт">
           <DatePicker
-            label="Prop account opening date"
+            label="Дата открытия проп-счёта"
             value={values.openedOn}
             max={data.today}
             onValueChange={(openedOn) => set({ ...values, openedOn })}
           />
         </Field>
         {values.status !== "active" && (
-          <Field label="Resolved on">
+          <Field label="Завершён">
             <DatePicker
-              label="Prop account closing date"
+              label="Дата закрытия проп-счёта"
               value={values.closedOn}
               max={data.today}
               onValueChange={(closedOn) => set({ ...values, closedOn })}
             />
           </Field>
         )}
-        <Field label="Previous attempt / phase">
+        <Field label="Предыдущая попытка / фаза">
           <OptionSelect
             value={values.parentId}
             onValueChange={(parentId) => set({ ...values, parentId })}
@@ -284,7 +284,7 @@ function AccountForm({
               ))}
           </OptionSelect>
         </Field>
-        <Field label="Link journal account (optional)">
+        <Field label="Связать с журнальным счётом (необязательно)">
           <OptionSelect
             value={values.journalAccountId}
             onValueChange={(journalAccountId) => set({ ...values, journalAccountId })}
@@ -305,14 +305,14 @@ function AccountForm({
           automatically.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Next renewal">
+          <Field label="Следующее продление">
             <DatePicker
-              label="Next renewal date"
+              label="Дата следующего продления"
               value={values.renewalOn}
               onValueChange={(renewalOn) => set({ ...values, renewalOn })}
             />
           </Field>
-          {input("renewalAmount", "Expected renewal amount")}
+          {input("renewalAmount", "Ожидаемая сумма продления")}
         </div>
         <Button
           type="button"
@@ -322,14 +322,14 @@ function AccountForm({
           Clear reminder
         </Button>
       </details>
-      <Field label="Notes / rules / breach reason">
+      <Field label="Заметки / правила / причина нарушения">
         <textarea
           className={`${fieldClass} h-24 py-2`}
           value={values.notes}
           onChange={(e) => set({ ...values, notes: e.target.value })}
         />
       </Field>
-      {old && input("reason", "Reason for change", true)}
+      {old && input("reason", "Причина изменения", true)}
     </Form>
   );
 }
@@ -386,15 +386,15 @@ function EntryForm({
         old
           ? `Edit ${kind}`
           : payout
-            ? "Log a payout request"
+            ? "Записать запрос на выплату"
             : refund
-              ? "Record an expense refund"
-              : "Record prop spending"
+              ? "Записать возврат расхода"
+              : "Записать расход проп-фирмы"
       }
       description={
         payout
-          ? "A request is not income. Record actual bank receipts separately, including partial payments. This does not request a payout from your firm."
-          : "Record cash that actually changed hands. Include taxes and fees in the amount paid. Do not duplicate trading commissions already included elsewhere."
+          ? "Запрос — не доход. Записывайте фактические банковские поступления отдельно, включая частичные платежи. Это не запрос выплаты от фирмы."
+          : "Записывайте деньги, которые фактически перешли из рук в руки. Включайте налоги и комиссии в сумму. Не дублируйте торговые комиссии, уже учтённые elsewhere."
       }
       busy={busy}
       error={error}
@@ -403,7 +403,7 @@ function EntryForm({
       }
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Prop account">
+        <Field label="Проп-счёт">
           <OptionSelect
             disabled={Boolean(old || refund)}
             value={values.accountId}
@@ -412,7 +412,7 @@ function EntryForm({
               set({ ...values, accountId, firm: a?.firm ?? "", currency: a?.currency ?? "" });
             }}
           >
-            <option value="">{payout ? "Choose a funded account" : "Shared firm expense"}</option>
+            <option value="">{payout ? "Выберите финансируемый счёт" : "Общий расход фирмы"}</option>
             {data.accounts
               .filter((a) => !payout || ["funded", "instant_funded", "live"].includes(a.program))
               .map((a) => (
@@ -423,10 +423,10 @@ function EntryForm({
               ))}
           </OptionSelect>
         </Field>
-        {input("firm", "Firm", true, Boolean(values.accountId || old || refund))}
-        {input("currency", "Currency", true, Boolean(values.accountId || old || refund))}
+        {input("firm", "Фирма", true, Boolean(values.accountId || old || refund))}
+        {input("currency", "Валюта", true, Boolean(values.accountId || old || refund))}
         {!payout && !refund && (
-          <Field label="Expense category">
+          <Field label="Категория расхода">
             <OptionSelect
               value={values.category}
               onValueChange={(category) => set({ ...values, category })}
@@ -439,20 +439,20 @@ function EntryForm({
             </OptionSelect>
           </Field>
         )}
-        {input("amount", payout ? "Gross requested amount (before split)" : "Actual amount", true)}
+        {input("amount", payout ? "Запрошенная сумма до вычета доли (брутто)" : "Фактическая сумма", true)}
         {payout && (
           <>
-            {input("splitPercent", "Your share (%)", true)}
-            {input("fee", "Fees withheld from your share", true)}
+            {input("splitPercent", "Ваша доля (%)", true)}
+            {input("fee", "Комиссии, удержанные из вашей доли", true)}
             <p className="col-span-full text-xs text-muted-foreground">
               If your amount is already after the firm split, enter 100% and only fees still to be
               deducted. Never deduct the split twice.
             </p>
           </>
         )}
-        <Field label={payout ? "Request date" : "Cash date"}>
+        <Field label={payout ? "Дата запроса" : "Дата операции"}>
           <DatePicker
-            label={payout ? "Payout request date" : "Transaction date"}
+            label={payout ? "Дата запроса выплаты" : "Дата транзакции"}
             value={values.occurredOn}
             max={data.today}
             onValueChange={(occurredOn) => set({ ...values, occurredOn })}
@@ -460,14 +460,14 @@ function EntryForm({
         </Field>
         {payout && (
           <>
-            <Field label="Expected payment date (optional)">
+            <Field label="Ожидаемая дата выплаты (необязательно)">
               <DatePicker
-                label="Expected payout date"
+                label="Ожидаемая дата выплаты"
                 value={values.dueOn}
                 onValueChange={(dueOn) => set({ ...values, dueOn })}
               />
             </Field>
-            <Field label="Payout status">
+            <Field label="Статус выплаты">
               <OptionSelect
                 value={values.status}
                 onValueChange={(status) =>
@@ -483,9 +483,9 @@ function EntryForm({
             </Field>
           </>
         )}
-        {input("reference", "Invoice / payment reference")}
+        {input("reference", "Счёт / ссылка на платёж")}
       </div>
-      <Field label="Notes">
+      <Field label="Заметки">
         <textarea
           className={`${fieldClass} h-20 py-2`}
           value={values.notes}
@@ -498,7 +498,7 @@ function EntryForm({
           payout income.
         </p>
       )}
-      {old && input("reason", "Reason for change", true)}
+      {old && input("reason", "Причина изменения", true)}
     </Form>
   );
 }
@@ -520,7 +520,7 @@ function ReceiptForm({
   const { busy, error, save } = useSave(close, refresh);
   return (
     <Form
-      title="Record payout cash movement"
+      title="Записать движение денег выплаты"
       description={`Record the actual net amount credited or returned in ${payout.currency}. If your bank converted currencies, use the statement's original-currency amount; this tracker does not invent an exchange rate.`}
       busy={busy}
       error={error}
@@ -535,7 +535,7 @@ function ReceiptForm({
       }
     >
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label="Movement">
+        <Field label="Движение">
           <OptionSelect value={values.kind} onValueChange={(kind) => set({ ...values, kind })}>
             <option value="receipt">Money received</option>
             <option value="reversal">Money returned / reversed</option>
@@ -548,22 +548,22 @@ function ReceiptForm({
             onChange={(e) => set({ ...values, amount: e.target.value })}
           />
         </Field>
-        <Field label="Settlement date">
+        <Field label="Дата расчёта">
           <DatePicker
-            label="Settlement date"
+            label="Дата расчёта"
             value={values.occurredOn}
             max={data.today}
             onValueChange={(occurredOn) => set({ ...values, occurredOn })}
           />
         </Field>
-        <Field label="Bank reference">
+        <Field label="Банковская ссылка">
           <Input
             value={values.reference}
             onChange={(e) => set({ ...values, reference: e.target.value })}
           />
         </Field>
       </div>
-      <Field label="Notes">
+      <Field label="Заметки">
         <textarea
           className={`${fieldClass} h-20 py-2`}
           value={values.notes}
@@ -589,8 +589,8 @@ function ChangeForm({
       title={modal.name}
       description={
         modal.action === "account.archive"
-          ? "Archiving hides the account from the active list. Its cash history remains in returns. You can restore it later."
-          : "Voided records stay in the audit trail and are excluded from cash totals. They can be restored. Voiding a payout also excludes its receipts."
+          ? "Архивация скрывает счёт из активного списка. Его денежная история остаётся в возвратах. Можно восстановить позже."
+          : "Аннулированные записи остаются в аудите и исключаются из денежных итогов. Их можно восстановить. Аннулирование выплаты также исключает её поступления."
       }
       busy={busy}
       error={error}
@@ -605,7 +605,7 @@ function ChangeForm({
         })
       }
     >
-      <Field label="Reason">
+      <Field label="Причина">
         <Input required value={reason} onChange={(e) => setReason(e.target.value)} />
       </Field>
     </Form>
@@ -663,7 +663,7 @@ function Detail({ modal, data }: Props & { modal: Extract<PropModal, { kind: "de
               <pre className="whitespace-pre-wrap break-all">
                 {item.beforeJson
                   ? JSON.stringify(JSON.parse(item.beforeJson), null, 2)
-                  : "New record"}
+                  : "Новая запись"}
               </pre>
               <p className="my-2 font-medium">After</p>
               <pre className="whitespace-pre-wrap break-all">
@@ -716,12 +716,12 @@ function ImportForm({ close, refresh }: Props) {
       <p className="text-xs text-muted-foreground">
         Use kind expense, refund or payout; date YYYY-MM-DD; positive amount in currency units. A
         payout amount is cash already received after splits and fees. Payouts need account_id from
-        an account’s Details. A refund’s expense_id references its original CSV row ID. Put expenses
+        an account's Details. A refund's expense_id references its original CSV row ID. Put expenses
         before their refunds. This is not a broker statement importer.
       </p>
       <Input
         type="file"
-        aria-label="Prop cash CSV file"
+        aria-label="CSV файл денежных операций проп-фирм"
         accept=".csv,text/csv"
         disabled={busy}
         onChange={async (e) => {
@@ -731,18 +731,18 @@ function ImportForm({ close, refresh }: Props) {
           setError("");
           if (!file) return;
           if (file.size > 2 * 1024 * 1024) {
-            setError("Use a CSV up to 2 MB / 1,000 rows.");
+            setError("Используйте CSV до 2 МБ / 1000 строк.");
             return;
           }
           try {
             setContent(decodeImportFile(await file.arrayBuffer()));
           } catch {
-            setError("Could not read CSV.");
+            setError("Не удалось прочитать CSV.");
           }
         }}
       />
       <Button variant="outline" disabled={!content || busy} onClick={() => void act("preview")}>
-        {busy ? "Validating…" : "Validate & preview"}
+        {busy ? "Проверка…" : "Проверить и предпросмотр"}
       </Button>
       {error && (
         <p role="alert" className="text-sm text-destructive">

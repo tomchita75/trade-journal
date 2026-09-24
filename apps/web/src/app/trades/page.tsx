@@ -98,7 +98,7 @@ function Trades() {
                   : false
             }
             onCheckedChange={(value) => table.toggleAllRowsSelected(value === true)}
-            aria-label="Select all matching trades"
+            aria-label="Выбрать все совпадающие сделки"
           />
         ),
         cell: ({ row }) => (
@@ -106,40 +106,40 @@ function Trades() {
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(value === true)}
             onClick={(event) => event.stopPropagation()}
-            aria-label="Select trade"
+            aria-label="Выбрать сделку"
           />
         ),
       },
       {
         id: "closedAt",
         accessorKey: "closedAt",
-        header: "Close date",
+        header: "Дата закрытия",
         cell: ({ getValue }) => (
           <span className="text-muted-foreground">
-            {getValue<string | null>() ? dayKeyOf(getValue<string>(), timeZone) : "open"}
+            {getValue<string | null>() ? dayKeyOf(getValue<string>(), timeZone) : "открыта"}
           </span>
         ),
       },
       {
         id: "symbol",
         accessorKey: "symbol",
-        header: "Symbol",
+        header: "Тикер",
         cell: ({ row, getValue }) => (
           <span className="flex items-center gap-2 font-medium">
             {getValue<string>()}
-            <span className="text-xs text-muted-foreground">{row.original.direction}</span>
+            <span className="text-xs text-muted-foreground">{row.original.direction === "long" ? "лонг" : "шорт"}</span>
           </span>
         ),
       },
       {
         id: "status",
         accessorKey: "status",
-        header: "Status",
+        header: "Статус",
         cell: ({ getValue }) => {
           const status = getValue<string>();
           return (
             <Badge variant={status === "win" ? "profit" : status === "loss" ? "loss" : "secondary"}>
-              {status.toUpperCase()}
+              {status === "win" ? "ПРИБЫЛЬ" : status === "loss" ? "УБЫТОК" : status.toUpperCase()}
             </Badge>
           );
         },
@@ -147,13 +147,13 @@ function Trades() {
       {
         id: "quantity",
         accessorKey: "quantity",
-        header: "Volume",
+        header: "Объём",
         cell: ({ getValue }) => <span className="tnum">{fmtNumber(getValue<number>(), 4)}</span>,
       },
       {
         id: "avgEntry",
         accessorKey: "avgEntry",
-        header: "Entry",
+        header: "Вход",
         cell: ({ getValue }) => (
           <span className="tnum">
             <MonetaryValue>{fmtNumber(getValue<number>())}</MonetaryValue>
@@ -163,7 +163,7 @@ function Trades() {
       {
         id: "avgExit",
         accessorKey: "avgExit",
-        header: "Exit",
+        header: "Выход",
         cell: ({ getValue }) => (
           <span className="tnum">
             <MonetaryValue>
@@ -175,20 +175,20 @@ function Trades() {
       {
         id: "netPnl",
         accessorKey: "netPnl",
-        header: "Net P&L",
+        header: "Чистый P&L",
         cell: ({ getValue }) => <Pnl value={getValue<number>()} />,
       },
       {
         id: "roi",
         accessorFn: (row) =>
           row.avgEntry * row.quantity > 0 ? row.netPnl / (row.avgEntry * row.quantity) : 0,
-        header: "Net ROI",
+        header: "Чистая ROI",
         cell: ({ getValue }) => <span className="tnum">{fmtPercent(getValue<number>(), 2)}</span>,
       },
       {
         id: "fees",
         accessorKey: "fees",
-        header: "Fees",
+        header: "Комиссии",
         cell: ({ getValue }) => (
           <span className="tnum text-muted-foreground">
             <MonetaryValue>{fmtMoney(getValue<number>())}</MonetaryValue>
@@ -198,7 +198,7 @@ function Trades() {
       {
         id: "durationMs",
         accessorKey: "durationMs",
-        header: "Duration",
+        header: "Длительность",
         cell: ({ getValue }) => (
           <span className="text-muted-foreground">{fmtDuration(getValue<number | null>())}</span>
         ),
@@ -206,7 +206,7 @@ function Trades() {
       {
         id: "executionCount",
         accessorKey: "executionCount",
-        header: "Execs",
+        header: "Исполнений",
         cell: ({ getValue }) => (
           <span className="tnum text-muted-foreground">{getValue<number>()}</span>
         ),
@@ -215,7 +215,7 @@ function Trades() {
         id: "tags",
         accessorKey: "tags",
         enableSorting: false,
-        header: "Tags",
+        header: "Теги",
         cell: ({ getValue }) => (
           <span className="flex max-w-40 flex-wrap gap-1">
             {getValue<string[]>().map((tag) => (
@@ -229,7 +229,7 @@ function Trades() {
       {
         id: "rating",
         accessorKey: "rating",
-        header: "Rating",
+        header: "Рейтинг",
         cell: ({ getValue }) => {
           const rating = getValue<number | null>();
           return (
@@ -242,7 +242,7 @@ function Trades() {
       {
         id: "reviewed",
         accessorKey: "reviewed",
-        header: "Reviewed",
+        header: "Просмотрено",
         cell: ({ getValue }) =>
           getValue<boolean>() ? (
             <Check className="h-4 w-4 text-profit" />
@@ -280,7 +280,7 @@ function Trades() {
   return (
     <div>
       <FilterBar
-        title="Trades"
+        title="Сделки"
         actions={
           <div className="flex items-center gap-2">
             <a href={`/api/export?format=csv&${query}`} download>
@@ -291,7 +291,7 @@ function Trades() {
             </a>
             <Button variant="outline" size="sm" onClick={() => setShowColumns((value) => !value)}>
               <Columns3 />
-              Columns
+              Колонки
             </Button>
           </div>
         }
@@ -301,16 +301,16 @@ function Trades() {
           <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">
             <Card>
               <CardHeader>
-                <CardTitle>Net cumulative P&L</CardTitle>
+                <CardTitle>Совокупный чистый P&L</CardTitle>
               </CardHeader>
               <CardContent>
                 <Pnl value={m.netPnl} className="text-xl font-semibold" />
-                <span className="ml-2 text-xs text-muted-foreground">{m.closedTrades} trades</span>
+                <span className="ml-2 text-xs text-muted-foreground">{m.closedTrades} сделок</span>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Profit factor</CardTitle>
+                <CardTitle>Профит-фактор</CardTitle>
               </CardHeader>
               <CardContent>
                 <span className="text-xl font-semibold tnum">
@@ -324,7 +324,7 @@ function Trades() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Trade win %</CardTitle>
+                <CardTitle>Процент побед</CardTitle>
               </CardHeader>
               <CardContent>
                 <span className="text-xl font-semibold tnum">{fmtPercent(m.winRate)}</span>
@@ -332,7 +332,7 @@ function Trades() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Avg win / loss</CardTitle>
+                <CardTitle>Средняя прибыль / убыток</CardTitle>
               </CardHeader>
               <CardContent>
                 <span className="text-xl font-semibold tnum">
@@ -367,19 +367,19 @@ function Trades() {
         {selectedKeys.length > 0 && (
           <Card>
             <CardContent className="flex flex-wrap items-center gap-2 py-2">
-              <span className="text-sm text-muted-foreground">{selectedKeys.length} selected</span>
+              <span className="text-sm text-muted-foreground">Выбрано: {selectedKeys.length}</span>
               <Button variant="outline" size="sm" onClick={() => bulk("review")}>
                 <Check />
-                Mark reviewed
+                Отметить просмотренными
               </Button>
               <Button variant="outline" size="sm" onClick={() => bulk("unreview")}>
-                Unreview
+                Снять просмотр
               </Button>
               <div className="flex max-w-full flex-wrap items-center gap-1">
                 <Input
                   value={tagInput}
                   onChange={(event) => setTagInput(event.target.value)}
-                  placeholder="tag"
+                  placeholder="тег"
                   className="h-8 w-28 text-xs"
                 />
                 <Button
@@ -392,7 +392,7 @@ function Trades() {
                   }}
                 >
                   <Tag />
-                  Tag
+                  Тег
                 </Button>
               </div>
               <Button
@@ -401,14 +401,14 @@ function Trades() {
                 onClick={() => {
                   if (
                     confirm(
-                      `Delete ${selectedKeys.length} trades and their executions? This cannot be undone.`,
+                      `Удалить ${selectedKeys.length} сделок и их исполнения? Это действие необратимо.`,
                     )
                   )
                     void bulk("delete");
                 }}
               >
                 <Trash2 />
-                Delete
+                Удалить
               </Button>
             </CardContent>
           </Card>
@@ -418,7 +418,7 @@ function Trades() {
           <div role="alert" className="space-y-2 text-sm text-destructive">
             <p>{error}</p>
             <Button variant="outline" onClick={refresh}>
-              Try again
+              Попробовать снова
             </Button>
           </div>
         ) : !data ? (
@@ -481,9 +481,9 @@ function Trades() {
                         colSpan={columns.length}
                         className="py-16 text-center text-muted-foreground"
                       >
-                        No trades match these filters.{" "}
+                        Ни одна сделка не соответствует этим фильтрам.{" "}
                         <Link href="/import" className="underline">
-                          Import some
+                          Импортировать
                         </Link>
                         .
                       </td>
@@ -496,8 +496,8 @@ function Trades() {
               <div className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3 text-xs text-muted-foreground">
                 <span>
                   {currentPage * pageSize + 1}–
-                  {Math.min((currentPage + 1) * pageSize, sortedRows.length)} of{" "}
-                  {fmtNumber(sortedRows.length, 0)} trades
+                  {Math.min((currentPage + 1) * pageSize, sortedRows.length)} из{" "}
+                  {fmtNumber(sortedRows.length, 0)} сделок
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -506,10 +506,10 @@ function Trades() {
                     disabled={currentPage === 0}
                     onClick={() => setPage(currentPage - 1)}
                   >
-                    Previous
+                    Назад
                   </Button>
                   <span>
-                    Page {currentPage + 1} of {pageCount}
+                    Страница {currentPage + 1} из {pageCount}
                   </span>
                   <Button
                     variant="outline"
@@ -517,7 +517,7 @@ function Trades() {
                     disabled={currentPage + 1 === pageCount}
                     onClick={() => setPage(currentPage + 1)}
                   >
-                    Next
+                    Вперёд
                   </Button>
                 </div>
               </div>

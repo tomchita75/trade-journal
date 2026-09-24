@@ -16,12 +16,12 @@ import { tooltipStyle, useVizTokens } from "./tokens";
 import { ChartFrame } from "./chart-frame";
 
 const LABELS: Record<keyof EdgeScoreComponents, string> = {
-  winRate: "Win %",
-  profitFactor: "Profit factor",
-  avgWinLoss: "Avg win/loss",
-  drawdown: "Drawdown",
-  recovery: "Recovery",
-  consistency: "Consistency",
+  winRate: "Процент побед",
+  profitFactor: "Профит-фактор",
+  avgWinLoss: "Средний выигрыш/проигрыш",
+  drawdown: "Просадка",
+  recovery: "Восстановление",
+  consistency: "Консистентность",
 };
 
 /** The open Edge Score, drawn from its six 0-100 components. */
@@ -56,7 +56,7 @@ export function EdgeRadar({
             cursor={false}
             allowEscapeViewBox={{ x: false, y: false }}
             contentStyle={tooltipStyle(t)}
-            formatter={(value) => [`${value}/100`, "Score"]}
+            formatter={(value) => [`${value}/100`, "Оценка"]}
           />
           <Radar
             dataKey="value"

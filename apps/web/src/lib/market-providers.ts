@@ -23,8 +23,8 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "London Strategic Edge",
     mode: "credentials",
     description:
-      "Historical candles. Stock and ETF prices are split adjusted; coverage depends on your plan.",
-    symbolHint: "Use the exact provider symbol, including the futures contract or currency pair.",
+      "Исторические свечи. Цены акций и ETF скорректированы на сплиты; покрытие зависит от вашего плана.",
+    symbolHint: "Используйте точный символ провайдера, включая фьючерсный контракт или валютную пару.",
     fields: [{ key: "apiKey", label: "API key", environmentKey: "LSE_API_KEY" }],
   },
   {
@@ -32,17 +32,17 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "Alpaca",
     mode: "credentials",
     description:
-      "US stocks and crypto. Choose a stock or crypto feed; SIP requires appropriate data access. Stock prices are unadjusted.",
-    symbolHint: "Stocks: AAPL. Crypto: BTC/USD; choose the Crypto dataset.",
+      "Акции США и крипто. Выберите ленту акций или крипто; SIP требует соответствующего доступа к данным. Цены акций не скорректированы.",
+    symbolHint: "Акции: AAPL. Крипто: BTC/USD; выберите набор данных Crypto.",
     fields: [
-      { key: "apiKey", label: "Key ID", environmentKey: "ALPACA_API_KEY" },
-      { key: "secretKey", label: "Secret key", environmentKey: "ALPACA_SECRET_KEY" },
+      { key: "apiKey", label: "ID ключа", environmentKey: "ALPACA_API_KEY" },
+      { key: "secretKey", label: "Секретный ключ", environmentKey: "ALPACA_SECRET_KEY" },
     ],
     datasets: [
-      { value: "", label: "Choose a data feed" },
-      { value: "iex", label: "IEX stocks" },
-      { value: "sip", label: "SIP stocks" },
-      { value: "crypto", label: "Crypto (US)" },
+      { value: "", label: "Выберите ленту данных" },
+      { value: "iex", label: "Акции IEX" },
+      { value: "sip", label: "Акции SIP" },
+      { value: "crypto", label: "Крипто (США)" },
     ],
   },
   {
@@ -50,9 +50,9 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "Binance",
     mode: "public",
     description:
-      "Public Binance spot candles. No API key required. Availability depends on your region and the listed pair.",
+      "Публичные спот-свечи Binance. Ключ API не требуется. Доступность зависит от вашего региона и указанной пары.",
     symbolHint:
-      "Spot pairs use BTCUSDT or ETHUSDT. USDT is not USD; account and quote currencies must match for estimates.",
+      "Спот-пары используют BTCUSDT или ETHUSDT. USDT — это не USD; валюта счёта и котировки должны совпадать для оценок.",
     fields: [],
   },
   {
@@ -60,8 +60,8 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "Coinbase",
     mode: "public",
     description:
-      "Public Coinbase Exchange spot candles. No API key required; intervals without trades may have no candle.",
-    symbolHint: "Use a Coinbase Exchange product such as BTC-USD or ETH-USD.",
+      "Публичные спот-свечи Coinbase Exchange. Ключ API не требуется; интервалы без сделок могут не иметь свечи.",
+    symbolHint: "Используйте продукт Coinbase Exchange, такой как BTC-USD или ETH-USD.",
     fields: [],
   },
   {
@@ -69,20 +69,20 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "OANDA",
     mode: "credentials",
     description:
-      "Forex and CFD candles from your v20 account. Midpoint prices, UTC-aligned bars and tick-count volume; no spread or FX conversion is included.",
+      "Свечи Forex и CFD из вашего счёта v20. Цены по середине, свечи выровнены по UTC и объём по тикам; спред и конвертация валюты не включены.",
     symbolHint:
-      "Use an OANDA instrument such as EUR_USD. Set the contract multiplier in Settings to match the units in your fills.",
+      "Используйте инструмент OANDA, такой как EUR_USD. Укажите множитель контракта в настройках, чтобы он соответствовал единицам в ваших филлах.",
     fields: [
-      { key: "apiKey", label: "Access token", environmentKey: "OANDA_API_TOKEN" },
-      { key: "accountId", label: "v20 account ID", environmentKey: "OANDA_ACCOUNT_ID" },
+      { key: "apiKey", label: "Токен доступа", environmentKey: "OANDA_API_TOKEN" },
+      { key: "accountId", label: "ID счёта v20", environmentKey: "OANDA_ACCOUNT_ID" },
       {
         key: "environment",
-        label: "Environment",
+        label: "Окружение",
         environmentKey: "OANDA_ENVIRONMENT",
         defaultValue: "practice",
         options: [
-          { value: "practice", label: "Practice" },
-          { value: "live", label: "Live" },
+          { value: "practice", label: "Демо" },
+          { value: "live", label: "Реальный" },
         ],
       },
     ],
@@ -92,9 +92,9 @@ export const MARKET_PROVIDERS: ProviderInfo[] = [
     name: "Market data CSV",
     mode: "csv",
     description:
-      "Local OHLCV candle files. Upload market prices separately from your trade executions.",
+      "Локальные файлы свечей OHLCV. Загружайте рыночные цены отдельно от исполнений сделок.",
     symbolHint:
-      "Use the exact symbol and resolution recorded for the uploaded file. Select a dataset when files overlap.",
+      "Используйте точный символ и разрешение, записанные для загруженного файла. Выберите набор данных, когда файлы перекрываются.",
     fields: [],
   },
 ];

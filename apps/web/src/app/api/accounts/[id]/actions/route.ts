@@ -11,6 +11,9 @@ interface ActionBody {
   action: "archive" | "unarchive" | "clear" | "sync" | "transfer";
   /** For "transfer": destination account id. */
   toAccountId?: string;
+  /** For "sync": optional ISO calendar-date range, YYYY-MM-DD. */
+  startDate?: string;
+  endDate?: string;
 }
 
 export const POST = handler(async (request: Request, { params }: Params) => {
@@ -33,7 +36,12 @@ export const POST = handler(async (request: Request, { params }: Params) => {
       });
       return ok({ cleared: true });
     case "sync":
-      return ok({ sync: await syncAccount(id) });
+  return ok({
+    sync: await syncAccount(id, {
+      startDate: body.startDate,
+      endDate: body.endDate,
+    }),
+  });
     case "transfer": {
       if (!body.toAccountId) return bad("toAccountId is required");
       const destinationId = body.toAccountId;

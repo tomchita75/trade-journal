@@ -2,7 +2,7 @@ import { isTimeZone } from "./timezone";
 
 let supportedZones: string[] | undefined;
 
-/** Human-readable names retain the region so similarly named cities stay distinct. */
+/** Читаемые названия сохраняют регион, чтобы города с похожими названиями оставались различимы. */
 export const timeZoneLabel = (zone: string): string =>
   zone.replaceAll("_", " ").replaceAll("/", " / ");
 
@@ -15,16 +15,16 @@ const searchKey = (value: string) =>
     .trim();
 
 /**
- * Intl lists primary zones, but omits UTC and many valid aliases. Keep saved
- * aliases and offer any exact, valid name entered in search as a selectable row.
- * Search text itself is never used as the setting.
+ * Intl перечисляет основные пояса, но опускает UTC и многие допустимые алиасы. Сохраняем
+ * сохранённые алиасы и предлагаем любое точное, допустимое имя, введённое в поиске, как selectable row.
+ * Текст поиска сам по себе никогда не используется как настройка.
  */
 export const timeZoneOptions = (current: string, query = ""): string[] => {
   if (!supportedZones) {
     try {
       supportedZones = Intl.supportedValuesOf("timeZone");
     } catch {
-      // Older browsers can still select their current zone or search a full valid name.
+      // Старые браузеры всё ещё могут выбрать свой текущий пояс или искать полное допустимое имя.
       supportedZones = [];
     }
   }
@@ -32,7 +32,7 @@ export const timeZoneOptions = (current: string, query = ""): string[] => {
   const candidate = query.trim().replaceAll(" ", "_");
   for (const zone of [current, candidate]) {
     if (!zone || !isTimeZone(zone)) continue;
-    // Avoid adding a second row for capitalization-only differences in a search.
+    // Избегаем добавления второй строки для различий только в регистре при поиске.
     if (!Array.from(zones).some((existing) => existing.toLowerCase() === zone.toLowerCase()))
       zones.add(zone);
   }

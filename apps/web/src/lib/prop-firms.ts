@@ -95,7 +95,7 @@ const supportedCurrencies = new Set(Intl.supportedValuesOf("currency"));
 const currencyFormats = new Map<string, Intl.NumberFormat>();
 function currencyFormat(currency: string) {
   if (!supportedCurrencies.has(currency))
-    throw new Error("Choose a supported three-letter currency code.");
+    throw new Error("Выберите поддерживаемый трёхбуквенный код валюты.");
   let format = currencyFormats.get(currency);
   if (!format) {
     format = new Intl.NumberFormat("en", { style: "currency", currency });
@@ -105,19 +105,19 @@ function currencyFormat(currency: string) {
 }
 export function currencyDigits(currency: string) {
   if (!/^[A-Z]{3}$/.test(currency) || !supportedCurrencies.has(currency))
-    throw new Error("Choose a supported three-letter currency code.");
+    throw new Error("Выберите поддерживаемый трёхбуквенный код валюты.");
   return currencyFormat(currency).resolvedOptions().maximumFractionDigits ?? 2;
 }
 /** Parse decimal input directly into integer minor units; never silently round user input. */
 export function toMinor(value: unknown, currency: string): number {
   const digits = currencyDigits(currency);
   if (typeof value !== "string" || !/^\d+(?:\.\d+)?$/.test(value.trim()))
-    throw new Error("Enter a nonnegative decimal amount.");
+    throw new Error("Введите неотрицательное десятичное число.");
   const [whole, fraction = ""] = value.trim().split(".");
-  if (fraction.length > digits) throw new Error(`${currency} accepts ${digits} decimal places.`);
+  if (fraction.length > digits) throw new Error(`${currency} принимает ${digits} знаков после запятой.`);
   const result = Number(whole) * 10 ** digits + Number(fraction.padEnd(digits, "0"));
   if (!Number.isSafeInteger(result) || result > 10_000_000_000)
-    throw new Error("Amount is too large.");
+    throw new Error("Сумма слишком велика.");
   return result;
 }
 export const fromMinor = (value: number, currency: string) =>
@@ -190,7 +190,7 @@ export function cashMovements(entries: PropEntry[], receipts: PropReceipt[]): Ca
 }
 export function cashSummary(rows: CashMovement[]) {
   const currencies = [...new Set(rows.map((r) => r.currency))];
-  if (currencies.length > 1) throw new Error("Select one currency before combining cash amounts.");
+  if (currencies.length > 1) throw new Error("Выберите одну валюту перед объединением денежных сумм.");
   let spent = 0,
     refunds = 0,
     received = 0;

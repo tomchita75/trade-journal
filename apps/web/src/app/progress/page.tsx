@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ReviewExport } from "@/components/review-export";
 import { useApi, postJson } from "@/lib/use-api";
 import { scheduledRules, progressScore, type Routine, type RoutineCheck } from "@/lib/progress";
-const STAGES = ["Before trading", "During trading", "After trading"];
+const STAGES = ["До торговли", "Во время торговли", "После торговли"];
 export default function ProgressPage() {
   return (
     <Suspense>
@@ -53,7 +53,7 @@ function Progress() {
       refresh();
       return true;
     } catch (e) {
-      setFailure(e instanceof Error ? e.message : "Could not save.");
+      setFailure(e instanceof Error ? e.message : "Не удалось сохранить.");
       return false;
     } finally {
       setBusy(false);
@@ -62,17 +62,17 @@ function Progress() {
   return (
     <div>
       <FilterBar
-        title="Progress"
+        title="Прогресс"
         actions={
           <Button size="sm" onClick={() => setOpen(true)}>
-            Add routine
+            Добавить рутину
           </Button>
         }
       />
       <div className="space-y-4 p-4">
         <p className="text-sm text-muted-foreground">
-          Build a repeatable trading day. Routines are tracked independently of trade filters and
-          profit.
+          Создайте повторяемый торговый день. Рутины отслеживаются независимо от фильтров сделок и
+          прибыли.
         </p>
         {(error || failure) && (
           <p role="alert" className="text-sm text-destructive">
@@ -83,17 +83,17 @@ function Progress() {
           <CardContent className="flex flex-wrap items-center justify-between gap-6 py-6">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               <div>
-                <p className="text-xs text-muted-foreground">Daily completion</p>
+                <p className="text-xs text-muted-foreground">Выполнение за день</p>
                 <p className="text-4xl font-semibold">
                   {score?.score == null ? "-" : `${Math.round(score.score * 100)}%`}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {score?.completed ?? 0} of {score?.total ?? 0} scheduled routines
+                  {score?.completed ?? 0} из {score?.total ?? 0} запланированных рутин
                 </p>
               </div>
-              <Field label="Review date">
+              <Field label="Дата просмотра">
                 <DatePicker
-                  label="Progress date"
+                  label="Дата прогресса"
                   value={selected}
                   max={data?.today}
                   onValueChange={setDate}
@@ -102,12 +102,12 @@ function Progress() {
             </div>
             <ReviewExport
               document={{
-                title: `Routine review · ${selected}`,
+                title: `Просмотр рутины · ${selected}`,
                 lines: [
-                  `Completed: ${score?.completed ?? 0}/${score?.total ?? 0}`,
+                  `Выполнено: ${score?.completed ?? 0}/${score?.total ?? 0}`,
                   ...rules.map(
                     (r) =>
-                      `${data?.checks.some((c) => c.date === selected && c.ruleId === r.id && c.done) ? "[done]" : "[ ]"} ${r.stage}: ${r.title}`,
+                      `${data?.checks.some((c) => c.date === selected && c.ruleId === r.id && c.done) ? "[выполнено]" : "[ ]"} ${r.stage}: ${r.title}`,
                   ),
                 ],
               }}
@@ -144,17 +144,17 @@ function Progress() {
                         <button
                           className="text-xs text-muted-foreground underline"
                           onClick={() => {
-                            if (confirm(`Archive “${r.title}”? Previous days are preserved.`))
+                            if (confirm(`В архив «${r.title}»? Прошлые дни сохранятся.`))
                               void act({ id: r.id }, "DELETE");
                           }}
                         >
-                          Archive
+                          В архив
                         </button>
                       )}
                     </div>
                   ))}
                 {!rules.some((r) => r.stage === s) && (
-                  <p className="text-xs text-muted-foreground">No routines scheduled.</p>
+                  <p className="text-xs text-muted-foreground">Нет запланированных рутин.</p>
                 )}
               </CardContent>
             </Card>
@@ -162,7 +162,7 @@ function Progress() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Last 13 weeks</CardTitle>
+            <CardTitle>Последние 13 недель</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-flow-col grid-rows-7 gap-1 overflow-x-auto">
@@ -170,11 +170,11 @@ function Progress() {
                 <HoverHint
                   key={d.date}
                   heading={d.date}
-                  content={`${d.completed} of ${d.total} routines completed`}
+                  content={`${d.completed} из ${d.total} рутин выполнено`}
                 >
                   <button
                     key={d.date}
-                    aria-label={`${d.date}: ${d.completed}/${d.total} complete`}
+                    aria-label={`${d.date}: ${d.completed}/${d.total} выполнено`}
                     onClick={() => setDate(d.date)}
                     className={`min-h-7 min-w-7 rounded border ${selected === d.date ? "border-foreground" : "border-transparent"}`}
                     style={{
@@ -188,25 +188,26 @@ function Progress() {
               ))}
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Brighter squares mean a higher completion rate. Grey means no scheduled routines.
-              Click a day to review it. New routines start today.
+              Более яркие квадраты означают более высокий процент выполнения. Серый — нет
+              запланированных рутин. Нажмите на день, чтобы просмотреть его. Новые рутины
+              начинаются с сегодняшнего дня.
             </p>
           </CardContent>
         </Card>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add a daily routine</DialogTitle>
+              <DialogTitle>Добавить ежедневную рутину</DialogTitle>
             </DialogHeader>
-            <Field label="Routine">
+            <Field label="Рутина">
               <input
                 className={fieldClass}
                 value={title}
-                placeholder="Review the economic calendar"
+                placeholder="Просмотреть экономический календарь"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </Field>
-            <Field label="When">
+            <Field label="Когда">
               <OptionSelect
                 className={fieldClass}
                 value={stage}
@@ -218,7 +219,7 @@ function Progress() {
               </OptionSelect>
             </Field>
             <div className="flex flex-wrap gap-3">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
+              {["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"].map((day, i) => (
                 <label key={day} className="flex items-center gap-1 text-xs">
                   <Checkbox
                     checked={weekdays.includes(i)}
@@ -246,7 +247,7 @@ function Progress() {
                 }
               }}
             >
-              Add routine
+              Добавить рутину
             </Button>
           </DialogContent>
         </Dialog>

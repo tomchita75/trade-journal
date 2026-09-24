@@ -49,7 +49,7 @@ export function ReportMarketEstimates({
     try {
       for (const point of missing) {
         if (request.signal.aborted) break;
-        setStatus(`Calculating ${completed + 1} of ${missing.length} · ${point.symbol}`);
+        setStatus(`Расчёт ${completed + 1} из ${missing.length} · ${point.symbol}`);
         try {
           const response = await fetch(`/api/trades/${encodeURIComponent(point.key)}/market-data`, {
             method: "POST",
@@ -65,9 +65,9 @@ export function ReportMarketEstimates({
             signal: request.signal,
           });
           const body = (await response.json()) as TradeMarketResult & { error?: string };
-          if (!response.ok) throw new Error(body.error ?? "History request failed.");
+          if (!response.ok) throw new Error(body.error ?? "Запрос истории не удался.");
           if (body.estimate.mae === null || body.estimate.mfe === null)
-            throw new Error(body.estimate.warnings[0] ?? "Estimate unavailable.");
+            throw new Error(body.estimate.warnings[0] ?? "Оценка недоступна.");
           saved++;
           consecutiveFailures = 0;
         } catch (cause) {
@@ -75,7 +75,7 @@ export function ReportMarketEstimates({
           failed++;
           consecutiveFailures++;
           problems.add(
-            `${point.symbol}: ${cause instanceof Error ? cause.message : "History request failed."}`,
+            `${point.symbol}: ${cause instanceof Error ? cause.message : "Запрос истории не удался."}`,
           );
           setIssues([...problems].slice(0, 3));
         }
@@ -86,7 +86,7 @@ export function ReportMarketEstimates({
     } finally {
       setBusy(false);
       setStatus(
-        `${request.signal.aborted ? "Stopped. " : ""}${saved} estimates saved · ${failed} unavailable · ${missing.length - completed} not processed.`,
+        `${request.signal.aborted ? "Остановлено. " : ""}${saved} оценок сохранено · ${failed} недоступно · ${missing.length - completed} не обработано.`,
       );
       onComplete();
     }
@@ -94,26 +94,24 @@ export function ReportMarketEstimates({
   return (
     <div className="space-y-3 rounded-xl border bg-card p-4">
       <div>
-        <h3 className="text-sm font-medium">MAE & MFE estimates</h3>
+        <h3 className="text-sm font-medium">Оценки MAE и MFE</h3>
         <p className="mt-1 text-xs text-muted-foreground">
-          {points.length - missing.length} of {points.length} closed trades have saved estimates.
-          Estimated gross excursions exclude fees; MAE is shown as a positive adverse amount.
-          Missing values are excluded from plots, never counted as zero.
+          {points.length - missing.length} из {points.length} закрытых сделок имеют сохранённые оценки.
+          Оценочные валовые экскурсии исключают комиссии; MAE показан как положительная неблагоприятная сумма.
+          Отсутствующие значения исключаются из графиков, никогда не считаются нулём.
         </p>
       </div>
       {missing.length > 0 && (
         <details>
-          <summary className="cursor-pointer text-sm">Calculate missing estimates</summary>
+          <summary className="cursor-pointer text-sm">Рассчитать отсутствующие оценки</summary>
           <div className="mt-3 space-y-3">
             <p className="text-xs text-muted-foreground">
-              Loads {resolution} candles for this selection using each trade’s recorded symbol. This
-              uses your provider allowance and may take several minutes. For custom symbols or a
-              specific CSV dataset, load and save estimates from the individual trade.
+              Загружает {resolution} свечей для этой выборки, используя записанный символ каждой сделки. Это использует лимит вашего провайдера и может занять несколько минут. Для пользовательских символов или конкретного CSV-набора загрузите и сохраните оценки из отдельной сделки.
             </p>
             {available.length ? (
               <>
                 <OptionSelect
-                  aria-label="Estimate data provider"
+                  aria-label="Провайдер данных оценок"
                   value={provider}
                   disabled={busy}
                   onValueChange={(value) => {
@@ -123,7 +121,7 @@ export function ReportMarketEstimates({
                   }}
                 >
                   <option value="" disabled>
-                    Choose a data source
+                    Выберите источник данных
                   </option>
                   {available.map((item) => (
                     <option key={item.id} value={item.id}>
@@ -132,7 +130,7 @@ export function ReportMarketEstimates({
                   ))}
                 </OptionSelect>
                 <OptionSelect
-                  aria-label="Estimate candle resolution"
+                  aria-label="Разрешение свечей оценок"
                   disabled={busy}
                   value={resolution}
                   onValueChange={(value) => setResolution(value as Resolution)}
@@ -145,7 +143,7 @@ export function ReportMarketEstimates({
                 </OptionSelect>
                 {info?.datasets && (
                   <OptionSelect
-                    aria-label="Estimate dataset"
+                    aria-label="Набор данных оценок"
                     value={dataset}
                     disabled={busy}
                     onValueChange={(value) => {
@@ -168,12 +166,11 @@ export function ReportMarketEstimates({
                     disabled={busy || currencies.length !== 1}
                     onChange={(event) => setConfirmed(event.target.checked)}
                   />
-                  I confirm these symbols, price adjustments and quote currencies match the fills
-                  and account currency ({currencies.join(", ") || "none"}).
+                  Я подтверждаю, что эти символы, корректировки цен и валюты котировок соответствуют исполнениям и валюте счёта ({currencies.join(", ") || "none"}).
                 </label>
                 {currencies.length > 1 && (
                   <p className="text-xs text-muted-foreground">
-                    Select accounts with one currency to calculate estimates together.
+                    Выберите счета с одной валютой для совместного расчёта оценок.
                   </p>
                 )}
                 <Button
@@ -186,12 +183,12 @@ export function ReportMarketEstimates({
                   }
                   onClick={() => void calculate()}
                 >
-                  Calculate {missing.length} missing estimates
+                  Рассчитать {missing.length} отсутствующих оценок
                 </Button>
               </>
             ) : (
               <a className="text-sm underline" href="/settings#market-data">
-                Connect a market data provider in Settings
+                Подключите провайдера рыночных данных в настройках
               </a>
             )}
           </div>
@@ -199,7 +196,7 @@ export function ReportMarketEstimates({
       )}
       {busy && (
         <Button variant="outline" onClick={() => controller.current?.abort()}>
-          Stop calculation
+          Остановить расчёт
         </Button>
       )}
       {status && (

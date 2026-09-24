@@ -53,19 +53,19 @@ function Playbooks() {
   return (
     <div>
       <FilterBar
-        title="Playbooks"
+        title="Плейбуки"
         actions={
           <Button size="sm" onClick={() => setOpen(true)}>
             <Plus />
-            New playbook
+            Новый плейбук
           </Button>
         }
       />
       <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
         {data?.playbooks.length === 0 && (
           <p className="col-span-full py-16 text-center text-sm text-muted-foreground">
-            A playbook is a setup you trade on purpose — name it, write its rules, then tag trades
-            with it and let Reports tell you if it actually pays.
+            Плейбук — это сетап, которым вы торгуете намеренно. Назовите его, опишите правила,
+            затем помечайте сделки этим плейбуком, и отчёты покажут, действительно ли он работает.
           </p>
         )}
         {data?.playbooks.map((playbook) => (
@@ -75,7 +75,7 @@ function Playbooks() {
                 {playbook.name}
               </CardTitle>
               <div className="ml-auto flex shrink-0 items-center gap-2">
-                <span className="text-xs text-muted-foreground">{playbook.tradeCount} trades</span>
+                <span className="text-xs text-muted-foreground">{playbook.tradeCount} сделок</span>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -83,7 +83,7 @@ function Playbooks() {
                   onClick={async () => {
                     if (
                       confirm(
-                        `Delete "${playbook.name}"? Trades keep their data, just lose the link.`,
+                        `Удалить "${playbook.name}"? Сделки сохранят свои данные, просто потеряют связь.`,
                       )
                     ) {
                       await postJson(`/api/playbooks/${playbook.id}`, undefined, "DELETE");
@@ -118,29 +118,29 @@ function Playbooks() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New playbook</DialogTitle>
+            <DialogTitle>Новый плейбук</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Name (e.g. Opening range breakout)"
+              placeholder="Название (например, Пробой утреннего диапазона)"
             />
             <Input
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="One-line description"
+              placeholder="Краткое описание"
             />
             <Textarea
               value={rules}
               onChange={(event) => setRules(event.target.value)}
               placeholder={
-                "One rule per line:\nOnly A+ setups\nRisk max 1R\nNo entries after 11:30"
+                "По одному правилу на строку:\nТолько A+ сетапы\nРиск макс. 1R\nНикаких входов после 11:30"
               }
               className="min-h-32"
             />
             <Button onClick={create} disabled={!name}>
-              Create
+              Создать
             </Button>
           </div>
         </DialogContent>

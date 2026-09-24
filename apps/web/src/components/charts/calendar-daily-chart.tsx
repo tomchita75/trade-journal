@@ -34,7 +34,7 @@ export function CalendarDailyChart({
     <ChartFrame height={240}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
-          aria-label="Daily net profit and loss. Exact values and trade links are available in the table below."
+          aria-label="Ежедневный чистый прибыль и убыток. Точные значения и ссылки на сделки доступны в таблице ниже."
           data={data}
           margin={{ top: 12, right: 8, bottom: 4, left: 0 }}
           onClick={(state) => {
@@ -68,8 +68,8 @@ export function CalendarDailyChart({
             contentStyle={tooltipStyle(tokens)}
             cursor={{ fill: tokens.gridline, opacity: 0.35 }}
             formatter={(value, name) => [
-              privacy ? "Hidden" : fmtMoney(Number(value), currency),
-              name === "average" ? "5-trading-day average" : "Daily net P&L",
+              privacy ? "Скрыто" : fmtMoney(Number(value), currency),
+              name === "average" ? "Среднее за 5 торговых дней" : "Ежедневный чистый P&L",
             ]}
           />
           <Bar dataKey="netPnl" maxBarSize={22} isAnimationActive={false} cursor="pointer">

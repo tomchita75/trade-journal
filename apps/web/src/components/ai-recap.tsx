@@ -37,7 +37,7 @@ export function AiRecap({
         disabled={busy || disabled}
       >
         <Sparkles />
-        {busy ? "Writing…" : "AI recap"}
+        {busy ? "Генерация…" : "ИИ-сводка"}
       </Button>
       {error && <AiNotice error={error} onRetry={() => void generate()} onDismiss={dismiss} />}
     </div>

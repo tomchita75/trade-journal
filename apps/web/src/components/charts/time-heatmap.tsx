@@ -94,7 +94,7 @@ export function TimeHeatmap({
         {
           type: "value",
           gridIndex: 0,
-          name: privateMode ? "Net P&L (hidden)" : `Net P&L (${currency})`,
+          name: privateMode ? "Чистый P&L (скрыто)" : `Чистый P&L (${currency})`,
           nameTextStyle: { color: t.inkMuted, fontSize: 11 },
           splitLine: { lineStyle: { color: t.gridline } },
           axisLabel: {
@@ -106,7 +106,7 @@ export function TimeHeatmap({
         {
           type: "value",
           gridIndex: 1,
-          name: "Trades",
+          name: "Сделки",
           nameTextStyle: { color: t.inkMuted, fontSize: 11 },
           splitLine: { show: false },
           axisLabel: { color: t.inkMuted, fontSize: 11 },
@@ -115,9 +115,9 @@ export function TimeHeatmap({
       series: [
         {
           type: "bar",
-          name: "Net P&L",
+          name: "Чистый P&L",
           tooltip: {
-            valueFormatter: (value) => (privateMode ? "Hidden" : fmtMoney(Number(value), currency)),
+            valueFormatter: (value) => (privateMode ? "Скрыто" : fmtMoney(Number(value), currency)),
           },
           xAxisIndex: 0,
           yAxisIndex: 0,
@@ -132,7 +132,7 @@ export function TimeHeatmap({
         },
         {
           type: "line",
-          name: "Trades",
+          name: "Сделки",
           tooltip: { valueFormatter: (value) => fmtNumber(Number(value), 0) },
           xAxisIndex: 1,
           yAxisIndex: 1,

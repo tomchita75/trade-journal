@@ -50,9 +50,9 @@ export function DashboardSavedLayouts({
           variant="outline"
           size="sm"
           className="dashboard-customize-trigger"
-          aria-label="Saved dashboard layouts"
+          aria-label="Сохранённые макеты дашборда"
         >
-          <LayoutTemplate /> Layouts <ChevronDown className="dashboard-customize-chevron" />
+          <LayoutTemplate /> Макеты <ChevronDown className="dashboard-customize-chevron" />
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
@@ -64,11 +64,11 @@ export function DashboardSavedLayouts({
           aria-labelledby={titleId}
         >
           <div className="dashboard-customize-heading">
-            <h2 id={titleId}>Saved layouts</h2>
-            <span className="dashboard-customize-count">{names.length} saved</span>
+            <h2 id={titleId}>Сохранённые макеты</h2>
+            <span className="dashboard-customize-count">{names.length} сохранено</span>
             <Popover.Close
               className="dashboard-customize-icon-button"
-              aria-label="Close saved layouts"
+              aria-label="Закрыть сохранённые макеты"
             >
               <X size={15} />
             </Popover.Close>
@@ -77,8 +77,8 @@ export function DashboardSavedLayouts({
             <div className="dashboard-customize-search">
               <Search size={14} aria-hidden="true" />
               <input
-                aria-label="Find a layout"
-                placeholder="Find a layout…"
+                aria-label="Найти макет"
+                placeholder="Найти макет…"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -116,7 +116,7 @@ export function DashboardSavedLayouts({
                     data-saved-layout
                     className="dashboard-customize-option dashboard-layout-option"
                     style={{ "--option-index": Math.min(index, 7) } as CSSProperties}
-                    aria-label={`Load ${name}`}
+                    aria-label={`Загрузить ${name}`}
                     onClick={() => {
                       onLoad(name);
                       setOpen(false);
@@ -128,7 +128,7 @@ export function DashboardSavedLayouts({
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-xs font-medium">{name}</span>
                       <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                        {visibleCardIds(layout).length} cards{active ? " · Current layout" : ""}
+                        {visibleCardIds(layout).length} карточек{active ? " · Текущий макет" : ""}
                       </span>
                     </span>
                     {active && (
@@ -140,10 +140,10 @@ export function DashboardSavedLayouts({
               {!matches.length && (
                 <div className="dashboard-customize-empty">
                   <LayoutTemplate size={24} aria-hidden="true" />
-                  <p>{names.length ? "No matching layouts" : "Make this dashboard yours"}</p>
+                  <p>{names.length ? "Нет совпадений" : "Сделайте этот дашборд своим"}</p>
                   {!names.length && (
                     <span className="max-w-56 text-center text-[11px] leading-relaxed">
-                      Save your favorite card arrangements and switch between them here.
+                      Сохраняйте любимые раскладки карточек и переключайтесь между ними здесь.
                     </span>
                   )}
                 </div>
@@ -156,7 +156,7 @@ export function DashboardSavedLayouts({
               event.preventDefault();
               if (!name.trim()) return;
               if (!onSave(name.trim())) return;
-              setSaved(`${name.trim()} saved`);
+              setSaved(`${name.trim()} сохранён`);
               setName("");
               setQuery("");
             }}
@@ -165,13 +165,13 @@ export function DashboardSavedLayouts({
               htmlFor={`${titleId}-name`}
               className="text-[11px] font-medium text-muted-foreground"
             >
-              Save current layout
+              Сохранить текущий макет
             </label>
             <div className="flex min-w-0 items-center gap-2">
               <Input
                 id={`${titleId}-name`}
-                aria-label="Layout name"
-                placeholder="e.g. Weekly review"
+                aria-label="Название макета"
+                placeholder="например, Еженедельный обзор"
                 value={name}
                 maxLength={80}
                 onChange={(event) => {
@@ -187,7 +187,7 @@ export function DashboardSavedLayouts({
                 disabled={!name.trim()}
               >
                 <Save className="h-3.5 w-3.5" />
-                Save
+                Сохранить
               </Button>
             </div>
             {saved && (

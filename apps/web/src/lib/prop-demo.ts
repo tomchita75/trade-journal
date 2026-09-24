@@ -1,13 +1,13 @@
 import { expectedPayout, type PropAccount, type PropData, type PropEntry } from "./prop-firms";
 
-/** Fictional, browser-only preview. Never persisted or linked to journal accounts. */
+/** Вымышленный, только для браузера превью. Никогда не сохраняется и не связывается со счетами журнала. */
 export function createPropDemo(today: string): PropData {
   const anchor = Date.parse(`${today}T12:00:00Z`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(today) || !Number.isFinite(anchor))
-    throw new Error("Invalid demo date.");
+    throw new Error("Неверная демо-дата.");
   const day = (ago: number) => new Date(anchor - ago * 86_400_000).toISOString().slice(0, 10);
   const data: PropData = { today, accounts: [], entries: [], receipts: [] };
-  const note = "Simulated demo data. Fictional firm, fees and payouts.";
+  const note = "Симулированные демо-данные. Вымышленная фирма, комиссии и выплаты.";
   function account(
     key: string,
     firm: string,
@@ -127,11 +127,11 @@ export function createPropDemo(today: string): PropData {
     splitBps: 9000,
     dueOn: day(-5),
   });
-  requested.notes = `${note} Awaiting review; no cash received.`;
+  requested.notes = `${note} Ожидает проверки; деньги не получены.`;
   entry(funded, "payout", 50000, 100, {
     status: "rejected",
     splitBps: 9000,
-    notes: `${note} Example of a rejected request.`,
+    notes: `${note} Пример отклонённого запроса.`,
   });
   entry(funded, "payout", 35000, 65, { status: "cancelled", splitBps: 9000 });
   const adjusted = entry(funded, "payout", 100000, 50, { splitBps: 9000, feeMinor: 1000 });
@@ -179,7 +179,7 @@ export function createPropDemo(today: string): PropData {
   entry(funded, "expense", 4900, 35, {
     accountId: null,
     category: "transfer",
-    notes: `${note} Shared firm cost.`,
+    notes: `${note} Общие расходы фирмы.`,
   });
   return data;
 }

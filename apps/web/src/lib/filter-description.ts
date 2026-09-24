@@ -1,38 +1,38 @@
 import type { AnalysisFilters } from "@luxalgo/journal-core";
 const names: Record<string, string> = {
-  accounts: "Accounts",
-  from: "From",
-  to: "To",
-  symbol: "Symbols",
-  excludeSymbol: "Exclude symbols",
-  tag: "Required tags",
-  mistake: "Required mistakes",
-  playbookId: "Strategy",
-  direction: "Direction",
-  status: "Outcome",
-  assetClass: "Asset class",
-  reviewed: "Reviewed",
-  ratingMin: "Minimum rating",
-  ratingMax: "Maximum rating",
-  quantityMin: "Minimum quantity",
-  quantityMax: "Maximum quantity",
-  entryMin: "Minimum entry price",
-  entryMax: "Maximum entry price",
-  exitMin: "Minimum exit price",
-  exitMax: "Maximum exit price",
-  durationMin: "Minimum minutes held",
-  durationMax: "Maximum minutes held",
-  rMin: "Minimum realized R",
-  rMax: "Maximum realized R",
-  plannedRMin: "Minimum planned R",
-  plannedRMax: "Maximum planned R",
-  pnlMin: "Minimum P&L",
-  pnlMax: "Maximum P&L",
-  weekdays: "Entry weekdays",
-  entryAfter: "Entry after",
-  entryBefore: "Entry before",
-  exitAfter: "Exit after",
-  exitBefore: "Exit before",
+  accounts: "Счета",
+  from: "С",
+  to: "По",
+  symbol: "Символы",
+  excludeSymbol: "Исключить символы",
+  tag: "Обязательные теги",
+  mistake: "Обязательные ошибки",
+  playbookId: "Стратегия",
+  direction: "Направление",
+  status: "Результат",
+  assetClass: "Класс активов",
+  reviewed: "Проверено",
+  ratingMin: "Мин. рейтинг",
+  ratingMax: "Макс. рейтинг",
+  quantityMin: "Мин. количество",
+  quantityMax: "Макс. количество",
+  entryMin: "Мин. цена входа",
+  entryMax: "Макс. цена входа",
+  exitMin: "Мин. цена выхода",
+  exitMax: "Макс. цена выхода",
+  durationMin: "Мин. минут удержания",
+  durationMax: "Макс. минут удержания",
+  rMin: "Мин. реализованный R",
+  rMax: "Макс. реализованный R",
+  plannedRMin: "Мин. плановый R",
+  plannedRMax: "Макс. плановый R",
+  pnlMin: "Мин. P&L",
+  pnlMax: "Макс. P&L",
+  weekdays: "Дни недели входа",
+  entryAfter: "Вход после",
+  entryBefore: "Вход до",
+  exitAfter: "Выход после",
+  exitBefore: "Выход до",
 };
 export function describeFilters(
   filters: AnalysisFilters,
@@ -48,18 +48,18 @@ export function describeFilters(
         if (k === "accounts")
           value = v
             .split(",")
-            .map((id) => accounts.find((a) => a.id === id)?.name ?? "Selected account")
+            .map((id) => accounts.find((a) => a.id === id)?.name ?? "Выбранный счёт")
             .join(", ");
         if (k === "playbookId")
-          value = playbooks.find((p) => p.id === v)?.name ?? "Selected strategy";
+          value = playbooks.find((p) => p.id === v)?.name ?? "Выбранная стратегия";
         if (k === "weekdays")
           value = v
             .split(",")
-            .map((d) => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][Number(d)] ?? d)
+            .map((d) => ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"][Number(d)] ?? d)
             .join(", ");
         if (privateMode && /^(entry|exit|pnl)(Min|Max)$/.test(k)) value = "••••";
         return `${names[k] ?? k}: ${value}`;
       })
-      .join(" · ") || "All trades"
+      .join(" · ") || "Все сделки"
   );
 }

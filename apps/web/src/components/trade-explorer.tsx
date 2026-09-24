@@ -25,7 +25,7 @@ const TradeScatter = dynamic(
   () => import("./charts/trade-scatter").then((module) => module.TradeScatter),
   {
     loading: () => (
-      <div role="status" aria-label="Loading scatter plot">
+      <div role="status" aria-label="Загрузка диаграммы рассеяния">
         <Skeleton className="h-80" />
       </div>
     ),
@@ -46,7 +46,7 @@ export function TradeExplorer({ query }: { query: string }) {
   const points = useMemo(() => plotTradePoints(data?.points ?? [], x, y), [data, x, y]);
   const date = useMemo(
     () =>
-      new Intl.DateTimeFormat("en", {
+      new Intl.DateTimeFormat("ru", {
         timeZone: data?.timeZone ?? "UTC",
         dateStyle: "medium",
         timeStyle: "short",
@@ -55,16 +55,16 @@ export function TradeExplorer({ query }: { query: string }) {
   );
   if (loading && !data)
     return (
-      <div role="status" aria-label="Loading trade explorer">
+      <div role="status" aria-label="Загрузка обозревателя сделок">
         <Skeleton className="h-96" />
       </div>
     );
   if (error || !data)
     return (
       <div role="alert" className="rounded-xl border p-5">
-        <p className="text-sm text-destructive">{error ?? "Unable to load trade explorer."}</p>
+        <p className="text-sm text-destructive">{error ?? "Не удалось загрузить обозреватель сделок."}</p>
         <Button onClick={refresh} variant="outline" size="sm" className="mt-3">
-          Try again
+          Попробовать снова
         </Button>
       </div>
     );
@@ -73,16 +73,16 @@ export function TradeExplorer({ query }: { query: string }) {
   const blocked = (y !== "realizedR" || excursion) && data.currencies.length > 1;
   const xTitle =
     x === "durationMinutes"
-      ? "Duration (minutes)"
+      ? "Длительность (мин)"
       : x === "entryMinute"
-        ? `Entry time (${data.timeZone})`
-        : `Estimated ${x.toUpperCase()} (${currency})`;
+        ? `Время входа (${data.timeZone})`
+        : `Оценочный ${x.toUpperCase()} (${currency})`;
   const yTitle =
     y === "netPnl"
-      ? `Net P&L (${currency})`
+      ? `Чистый P&L (${currency})`
       : y === "realizedR"
-        ? "Realized R"
-        : `Estimated ${y.toUpperCase()} (${currency})`;
+        ? "Реализованный R"
+        : `Оценочный ${y.toUpperCase()} (${currency})`;
   const value = (point: PlottedTrade) =>
     y === "mae" || y === "mfe" ? (
       <MonetaryValue>{fmtMoney(point.y, currency)}</MonetaryValue>
@@ -100,7 +100,7 @@ export function TradeExplorer({ query }: { query: string }) {
     ) : x === "entryMinute" ? (
       clockLabel(point.x)
     ) : (
-      `${point.x.toLocaleString(undefined, { maximumFractionDigits: 2 })} min`
+      `${point.x.toLocaleString("ru-RU", { maximumFractionDigits: 2 })} мин`
     );
   const pages = Math.ceil(points.length / PAGE_SIZE);
   const shownPage = Math.min(page, Math.max(0, pages - 1));
@@ -109,13 +109,12 @@ export function TradeExplorer({ query }: { query: string }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
           <caption className="pb-3 text-left text-muted-foreground">
-            All {points.length} comparable trades, newest close first. Each link opens the original
-            trade.
+            Все {points.length} сопоставимых сделок, сначала новые. Каждая ссылка открывает оригинальную сделку.
           </caption>
           <thead>
             <tr className="border-b">
               <th scope="col" className="py-2 pr-3">
-                Trade / closed
+                Сделка / закрыта
               </th>
               <th scope="col" className="px-2 text-right">
                 {xTitle}
@@ -156,10 +155,10 @@ export function TradeExplorer({ query }: { query: string }) {
             disabled={shownPage === 0}
             onClick={() => setPage(shownPage - 1)}
           >
-            Previous
+            Назад
           </Button>
           <p aria-live="polite" className="text-xs text-muted-foreground">
-            Page {shownPage + 1} of {pages}
+            Страница {shownPage + 1} из {pages}
           </p>
           <Button
             size="sm"
@@ -167,7 +166,7 @@ export function TradeExplorer({ query }: { query: string }) {
             disabled={shownPage === pages - 1}
             onClick={() => setPage(shownPage + 1)}
           >
-            Next
+            Вперёд
           </Button>
         </div>
       )}
@@ -177,10 +176,10 @@ export function TradeExplorer({ query }: { query: string }) {
     <section className="space-y-4" aria-labelledby="trade-explorer-title" data-trade-explorer>
       <div>
         <h2 id="trade-explorer-title" className="text-lg font-semibold">
-          Trade explorer
+          Обозреватель сделок
         </h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Compare individual trades, not group averages · Active account and filters ·{" "}
+          Сравнивайте отдельные сделки, не средние по группе · Активный аккаунт и фильтры ·{" "}
           {data.timeZone}
         </p>
       </div>
@@ -189,13 +188,13 @@ export function TradeExplorer({ query }: { query: string }) {
         currencies={data.currencies}
         onComplete={refresh}
       />
-      <div className="flex flex-wrap gap-2" aria-label="Scatter plot presets">
+      <div className="flex flex-wrap gap-2" aria-label="Пресеты диаграммы рассеяния">
         {(
           [
-            ["durationMinutes", "netPnl", "Holding time"],
-            ["mae", "netPnl", "MAE vs net P&L"],
-            ["mfe", "netPnl", "MFE vs net P&L"],
-            ["mae", "mfe", "MAE vs MFE"],
+            ["durationMinutes", "netPnl", "Время удержания"],
+            ["mae", "netPnl", "MAE против чистого P&L"],
+            ["mfe", "netPnl", "MFE против чистого P&L"],
+            ["mae", "mfe", "MAE против MFE"],
           ] as const
         ).map(([nextX, nextY, label]) => (
           <Button
@@ -219,15 +218,15 @@ export function TradeExplorer({ query }: { query: string }) {
             <div>
               <CardTitle>
                 {excursion
-                  ? `${xTitle} vs ${yTitle}`
-                  : `Trade outcomes by ${x === "durationMinutes" ? "holding time" : "entry time"}`}
+                  ? `${xTitle} против ${yTitle}`
+                  : `Исходы сделок по ${x === "durationMinutes" ? "времени удержания" : "времени входа"}`}
               </CardTitle>
               <p className="mt-2 text-xs text-muted-foreground">
                 {blocked
-                  ? `${data.points.length} closed trades`
-                  : `${points.length} of ${data.points.length} closed trades comparable`}{" "}
-                · One point per trade ·{" "}
-                {excursion ? "Gross excursion estimates; net P&L after fees" : "After fees"}
+                  ? `${data.points.length} закрытых сделок`
+                  : `${points.length} из ${data.points.length} закрытых сделок сопоставимы`}{" "}
+                · Одна точка на сделку ·{" "}
+                {excursion ? "Оценочный грубый эксурсив; чистый P&L после комиссий" : "После комиссий"}
               </p>
             </div>
             <div className="flex w-full flex-wrap gap-3 sm:w-auto">
@@ -236,7 +235,7 @@ export function TradeExplorer({ query }: { query: string }) {
                   htmlFor="trade-x-axis"
                   className="mb-1.5 block text-xs text-muted-foreground"
                 >
-                  X axis
+                  Ось X
                 </label>
                 <OptionSelect
                   id="trade-x-axis"
@@ -247,10 +246,10 @@ export function TradeExplorer({ query }: { query: string }) {
                     setPage(0);
                   }}
                 >
-                  <option value="durationMinutes">Duration (minutes)</option>
-                  <option value="entryMinute">Entry time</option>
-                  <option value="mae">Estimated MAE</option>
-                  <option value="mfe">Estimated MFE</option>
+                  <option value="durationMinutes">Длительность (мин)</option>
+                  <option value="entryMinute">Время входа</option>
+                  <option value="mae">Оценочный MAE</option>
+                  <option value="mfe">Оценочный MFE</option>
                 </OptionSelect>
               </div>
               <div className="min-w-0 flex-1 sm:w-44">
@@ -258,7 +257,7 @@ export function TradeExplorer({ query }: { query: string }) {
                   htmlFor="trade-y-axis"
                   className="mb-1.5 block text-xs text-muted-foreground"
                 >
-                  Y axis
+                  Ось Y
                 </label>
                 <OptionSelect
                   id="trade-y-axis"
@@ -269,10 +268,10 @@ export function TradeExplorer({ query }: { query: string }) {
                     setPage(0);
                   }}
                 >
-                  <option value="netPnl">Net P&L</option>
-                  <option value="realizedR">Realized R</option>
-                  <option value="mae">Estimated MAE</option>
-                  <option value="mfe">Estimated MFE</option>
+                  <option value="netPnl">Чистый P&L</option>
+                  <option value="realizedR">Реализованный R</option>
+                  <option value="mae">Оценочный MAE</option>
+                  <option value="mfe">Оценочный MFE</option>
                 </OptionSelect>
               </div>
             </div>
@@ -281,34 +280,34 @@ export function TradeExplorer({ query }: { query: string }) {
         <CardContent className="space-y-4">
           {data.points.length === 0 ? (
             <div className="py-10 text-center">
-              <h3 className="font-medium">No closed trades in this selection</h3>
+              <h3 className="font-medium">Нет закрытых сделок в этом выборе</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Change the date range or filters to explore your history. Open positions are
-                excluded.
+                Измените диапазон дат или фильтры, чтобы изучить вашу историю. Открытые позиции
+                исключены.
               </p>
             </div>
           ) : blocked ? (
             <p role="note" className="rounded-lg bg-muted/30 p-4 text-sm text-muted-foreground">
-              These trades use different currencies ({data.currencies.join(", ")}). Select accounts
-              with one currency for monetary axes, or use Duration and Realized R to compare
-              risk-normalized outcomes. No currency conversion is applied.
+              Эти сделки используют разные валюты ({data.currencies.join(", ")}). Выберите аккаунты
+              с одной валютой для денежных осей или используйте Длительность и Реализованный R для
+              сравнения нормализованных по риску исходов. Конвертация валют не применяется.
             </p>
           ) : (
             <>
               {points.length < data.points.length && (
                 <p role="note" className="text-xs leading-relaxed text-muted-foreground">
-                  {data.points.length - points.length} trades excluded:{" "}
+                  {data.points.length - points.length} сделок исключено:{" "}
                   {y === "realizedR"
-                    ? "realized R requires a valid planned stop-loss and any required contract multiplier; "
+                    ? "реализованный R требует валидный запланированный стоп-лосс и любой требуемый множитель контракта; "
                     : ""}
-                  {excursion ? "MAE/MFE require saved, current market-data estimates. " : ""}Both
-                  axes require valid values and timestamps.
+                  {excursion ? "MAE/MFE требуют сохранённые, текущие оценки рыночных данных. " : ""}Обе
+                  оси требуют валидные значения и временные метки.
                 </p>
               )}
               {y === "realizedR" && (
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  R = net P&L ÷ planned risk from your stop-loss. Uses weighted entry and total
-                  entry quantity; it does not measure maximum intratrade risk.
+                  R = чистый P&L ÷ запланированный риск от вашего стоп-лосса. Использует взвешенный
+                  вход и общее количество на входе; не измеряет максимальный внутридневной риск.
                 </p>
               )}
               {points.length >= (excursion ? 1 : 8) ? (
@@ -320,16 +319,16 @@ export function TradeExplorer({ query }: { query: string }) {
                         <span aria-hidden="true" className="text-[var(--profit)]">
                           ●
                         </span>{" "}
-                        Positive net P&L
+                        Положительный чистый P&L
                       </span>
                       <span>
                         <span aria-hidden="true" className="text-[var(--loss)]">
                           ●
                         </span>{" "}
-                        Negative net P&L
+                        Отрицательный чистый P&L
                       </span>
                       <span>
-                        <span aria-hidden="true">●</span> Zero net P&L
+                        <span aria-hidden="true">●</span> Нулевой чистый P&L
                       </span>
                     </span>
                   </div>
@@ -343,8 +342,8 @@ export function TradeExplorer({ query }: { query: string }) {
                   />
                   <p className="text-center text-xs text-muted-foreground">{xTitle}</p>
                   <p className="text-xs text-muted-foreground">
-                    Select a point to inspect its trade. Overlapping points remain individually
-                    accessible in the table.
+                    Выберите точку, чтобы изучить её сделку. Перекрывающиеся точки остаются
+                    индивидуально доступными в таблице.
                   </p>
                   <div aria-live="polite">
                     {selected && (
@@ -354,7 +353,7 @@ export function TradeExplorer({ query }: { query: string }) {
                             {selected.symbol} · {selected.direction} · {value(selected)}
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">
-                            {xValue(selected)} · Closed {date.format(new Date(selected.closedAt))}
+                            {xValue(selected)} · Закрыта {date.format(new Date(selected.closedAt))}
                           </p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -362,10 +361,10 @@ export function TradeExplorer({ query }: { query: string }) {
                             href={detailHref(selected.key)}
                             className="rounded text-sm underline underline-offset-4"
                           >
-                            Open trade ↗
+                            Открыть сделку ↗
                           </Link>
                           <Button size="sm" variant="ghost" onClick={() => setSelected(null)}>
-                            Dismiss
+                            Закрыть
                           </Button>
                         </div>
                       </div>
@@ -375,13 +374,14 @@ export function TradeExplorer({ query }: { query: string }) {
               ) : (
                 <p className="rounded-lg bg-muted/30 px-4 py-6 text-sm text-muted-foreground">
                   {points.length === 0
-                    ? "No trades have the data required for these axes. Try another axis or adjust your filters."
-                    : "Fewer than 8 comparable trades. Review the exact values below, or widen your filters to reveal a useful scatter plot."}
+                    ? "Нет сделок с данными, требуемыми для этих осей. Попробуйте другую ось или измените фильтры."
+                    : "Менее 8 сопоставимых сделок. Просмотрите точные значения ниже или расширьте фильтры, чтобы получить полезную диаграмму рассеяния."}
                 </p>
               )}
               {points.length > 0 && points.length < 20 && (
                 <p className="text-xs text-muted-foreground">
-                  Small sample: treat apparent patterns cautiously until more trades are available.
+                  Маленькая выборка: относитесь к видимым паттернам осторожно, пока не станет
+                  доступно больше сделок.
                 </p>
               )}
             </>
@@ -393,7 +393,7 @@ export function TradeExplorer({ query }: { query: string }) {
         (points.length < 8 ? (
           <Card>
             <CardHeader>
-              <CardTitle>Comparable trades</CardTitle>
+              <CardTitle>Сопоставимые сделки</CardTitle>
             </CardHeader>
             {table}
           </Card>
@@ -403,15 +403,16 @@ export function TradeExplorer({ query }: { query: string }) {
             onToggle={(event) => setTableOpen(event.currentTarget.open)}
           >
             <summary className="cursor-pointer rounded-xl px-4 py-3 text-sm font-medium">
-              Explore all {points.length} trades
+              Изучить все {points.length} сделок
             </summary>
             {tableOpen && table}
           </details>
         ))}
       <p className="text-xs leading-relaxed text-muted-foreground">
-        Duration is elapsed time from first entry to final exit, including overnight hours. Entry
-        time uses the journal timezone; midnight neighbors appear at opposite ends of that axis.
-        Patterns describe this selection, not causation or a recommended holding time.
+        Длительность — это прошедшее время от первого входа до окончательного выхода, включая
+        ночные часы. Время входа использует часовой пояс журнала; соседи около полуночи появляются
+        на противоположных концах этой оси. Паттерны описывают этот выбор, не причинность или
+        рекомендуемое время удержания.
       </p>
     </section>
   );

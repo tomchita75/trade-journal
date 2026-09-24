@@ -24,13 +24,13 @@ interface OverviewData {
 
 // Keep the original overview's aggregations and ordering alongside the advanced reports.
 const SECTIONS = [
-  { key: "symbol", title: "By symbol" },
-  { key: "direction", title: "Long vs short" },
-  { key: "weekday", title: "By weekday" },
-  { key: "duration", title: "By holding time" },
-  { key: "tag", title: "By tag" },
-  { key: "mistake", title: "By mistake" },
-  { key: "playbook", title: "By playbook" },
+  { key: "symbol", title: "По тикеру" },
+  { key: "direction", title: "Лонг против шорт" },
+  { key: "weekday", title: "По дню недели" },
+  { key: "duration", title: "По времени удержания" },
+  { key: "tag", title: "По тегу" },
+  { key: "mistake", title: "По ошибке" },
+  { key: "playbook", title: "По плейбуку" },
 ] as const;
 
 export function ReportOverview({ query, filters }: { query: string; filters: AnalysisFilters }) {
@@ -45,8 +45,8 @@ export function ReportOverview({ query, filters }: { query: string; filters: Ana
   if (data.currencies.length > 1)
     return (
       <p className="rounded-lg border p-4 text-sm">
-        These accounts use different currencies ({data.currencies.join(", ")}). Select accounts with
-        the same currency in Filters to compare monetary results.
+        Эти аккаунты используют разные валюты ({data.currencies.join(", ")}). Выберите аккаунты с
+        одинаковой валютой в фильтрах для сравнения денежных результатов.
       </p>
     );
   const currency = data.currencies[0] ?? "USD";
@@ -56,26 +56,26 @@ export function ReportOverview({ query, filters }: { query: string; filters: Ana
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          Trading overview · {data.timeZone} · {currency}
+          Обзор торговли · {data.timeZone} · {currency}
         </p>
         <ReviewExport
           containsFinancialData
           document={{
-            title: "Trading overview",
+            title: "Обзор торговли",
             subtitle: `${data.timeZone} · ${currency}`,
             lines: [
-              `Filters: ${describeFilters(filters, data.accounts, data.playbooks)}`,
+              `Фильтры: ${describeFilters(filters, data.accounts, data.playbooks)}`,
               "",
-              "Trade time performance (opening hour)",
+              "Эффективность по времени сделок (час открытия)",
               ...data.buckets.hour.map(
-                (b) => `${b.key}:00: ${b.trades} trades | Net P&L ${fmtMoney(b.netPnl, currency)}`,
+                (b) => `${b.key}:00: ${b.trades} сделок | Чистый P&L ${fmtMoney(b.netPnl, currency)}`,
               ),
               ...SECTIONS.flatMap((section) => [
                 "",
                 section.title,
                 ...data.buckets[section.key].map(
                   (b) =>
-                    `${label(section.key, b.key)}: ${b.trades} trades | Win ${fmtPercent(b.winRate, 0)} | Net P&L ${fmtMoney(b.netPnl, currency)}`,
+                    `${label(section.key, b.key)}: ${b.trades} сделок | Побед ${fmtPercent(b.winRate, 0)} | Чистый P&L ${fmtMoney(b.netPnl, currency)}`,
                 ),
               ]),
             ],
@@ -85,7 +85,7 @@ export function ReportOverview({ query, filters }: { query: string; filters: Ana
       <div className="grid gap-3 lg:grid-cols-2">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Trade time performance</CardTitle>
+            <CardTitle>Эффективность по времени сделок</CardTitle>
           </CardHeader>
           <CardContent>
             <TimeHeatmap hours={data.buckets.hour} currency={currency} />
@@ -100,17 +100,17 @@ export function ReportOverview({ query, filters }: { query: string; filters: Ana
               {data.buckets[section.key].length === 0 ? (
                 <p className="py-8 text-center text-sm text-muted-foreground">
                   {section.key === "tag" || section.key === "mistake" || section.key === "playbook"
-                    ? "Annotate trades to unlock this breakdown."
-                    : "No data yet."}
+                    ? "Помечайте сделки, чтобы разблокировать эту разбивку."
+                    : "Данных пока нет."}
                 </p>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{section.title.replace("By ", "")}</TableHead>
-                      <TableHead className="text-right">Trades</TableHead>
-                      <TableHead className="text-right">Win %</TableHead>
-                      <TableHead className="text-right">Net P&L</TableHead>
+                      <TableHead>{section.title.replace("По ", "")}</TableHead>
+                      <TableHead className="text-right">Сделок</TableHead>
+                      <TableHead className="text-right">Побед %</TableHead>
+                      <TableHead className="text-right">Чистый P&L</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -138,10 +138,10 @@ export function ReportOverview({ query, filters }: { query: string; filters: Ana
         ))}
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        Weekday and hour use trade opening times. Overview trade counts include open positions; win
-        rates use closed trades. Holding time requires a closed trade. Tags and mistakes can
-        overlap. By symbol shows the top 20 by net P&L; Breakdowns includes every symbol and
-        additional metrics for closed trades.
+        День недели и час используют время открытия сделки. Количество сделок в обзоре включает
+        открытые позиции; процент побед использует закрытые сделки. Время удержания требует закрытой
+        сделки. Теги и ошибки могут пересекаться. По тикеру показывает топ-20 по чистому P&L;
+        Разбивки включают каждый тикер и дополнительные метрики для закрытых сделок.
       </p>
     </div>
   );

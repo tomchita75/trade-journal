@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { OptionSelect } from "./ui/option-select";
+import { HistoricalReplay } from "./historical-replay";
 
 export function TradeMarketData({
   trade,
@@ -95,12 +96,11 @@ export function TradeMarketData({
     <div className="space-y-3">
       <Card>
         <CardHeader>
-          <CardTitle>Market data & replay</CardTitle>
+          <CardTitle>Рыночные данные и воспроизведение</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Load candles for this trade to use replay. Enable the checkbox to also calculate and
-            save monetary MAE/MFE estimates for Reports.
+            Загрузите свечи для этой сделки, чтобы использовать воспроизведение. Включите флажок для расчёта и сохранения денежных оценок MAE/MFE для отчётов.
           </p>
           {connectionError && (
             <p role="alert" className="text-sm text-destructive">
@@ -110,19 +110,19 @@ export function TradeMarketData({
           {!available.length && (
             <p className="text-sm text-muted-foreground">
               <a className="underline" href="/settings#market-data">
-                Connect a market data provider in Settings
+                Подключите провайдера рыночных данных в настройках
               </a>{" "}
-              to use historical replay and estimates.
+              для использования исторического воспроизведения и оценок.
             </p>
           )}
           {!trade.closedAt ? (
-            <p className="text-sm text-muted-foreground">Available after this trade closes.</p>
+            <p className="text-sm text-muted-foreground">Доступно после закрытия этой сделки.</p>
           ) : (
             available.length > 0 && (
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <Label htmlFor="market-provider">Data provider</Label>
+                    <Label htmlFor="market-provider">Провайдер данных</Label>
                     <OptionSelect
                       id="market-provider"
                       value={provider}
@@ -134,7 +134,7 @@ export function TradeMarketData({
                       }}
                     >
                       <option value="" disabled>
-                        Choose a data source
+                        Выберите источник данных
                       </option>
                       {available.map((item) => (
                         <option key={item.id} value={item.id}>
@@ -144,7 +144,7 @@ export function TradeMarketData({
                     </OptionSelect>
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="market-symbol">Provider symbol</Label>
+                    <Label htmlFor="market-symbol">Символ провайдера</Label>
                     <Input
                       id="market-symbol"
                       value={symbol}
@@ -156,7 +156,7 @@ export function TradeMarketData({
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="market-resolution">Candle resolution</Label>
+                    <Label htmlFor="market-resolution">Разрешение свечей</Label>
                     <OptionSelect
                       id="market-resolution"
                       value={resolution}
@@ -176,7 +176,7 @@ export function TradeMarketData({
                     info?.mode === "csv" ||
                     info?.id === "london-strategic-edge") && (
                     <div className="space-y-1">
-                      <Label htmlFor="market-dataset">Data feed / dataset</Label>
+                      <Label htmlFor="market-dataset">Канал данных / набор данных</Label>
                       {info?.datasets || info?.mode === "csv" ? (
                         <OptionSelect
                           id="market-dataset"
@@ -189,7 +189,7 @@ export function TradeMarketData({
                         >
                           {(
                             info.datasets ?? [
-                              { value: "", label: "Automatic matching file" },
+                              { value: "", label: "Автоматический подбор файла" },
                               ...(csv?.datasets ?? []).map((item) => ({
                                 value: item.id,
                                 label: `${item.name} · ${item.symbol} · ${item.resolution}`,
@@ -205,7 +205,7 @@ export function TradeMarketData({
                         <Input
                           id="market-dataset"
                           value={dataset}
-                          placeholder="Leave blank for automatic selection"
+                          placeholder="Оставьте пустым для автоматического выбора"
                           onChange={(event) => {
                             invalidate();
                             setDataset(event.target.value);
@@ -217,8 +217,7 @@ export function TradeMarketData({
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {info?.description} {info?.symbolHint} Option contract history is not supported
-                  yet.
+                  {info?.description} {info?.symbolHint} История опционных контрактов пока не поддерживается.
                 </p>
                 <label className="flex items-start gap-2 text-xs text-muted-foreground">
                   <input
@@ -231,15 +230,11 @@ export function TradeMarketData({
                     }}
                   />
                   <span>
-                    Calculate and save MAE/MFE estimates for Reports. I confirm that this
-                    instrument, price adjustments and quote currency match my fills and account (
-                    {trade.currency}).
+                    Рассчитать и сохранить оценки MAE/MFE для отчётов. Я подтверждаю, что этот инструмент, корректировки цен и валюта котировок соответствуют моим исполнениям и счёту ({trade.currency}).
                   </span>
                 </label>
                 <p className="text-xs text-muted-foreground">
-                  Unchecked: load candles and replay only. Checked: also calculate monetary
-                  estimates and save valid results to Reports. Missing or mismatched data stays
-                  unavailable.
+                  Не отмечено: загрузить свечи и воспроизведение. Отмечено: также рассчитать денежные оценки и сохранить валидные результаты в отчёты. Отсутствующие или несоответствующие данные остаются недоступными.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -252,19 +247,19 @@ export function TradeMarketData({
                     onClick={() => void load()}
                   >
                     {busy
-                      ? "Loading history…"
+                      ? "Загрузка истории…"
                       : confirmed
-                        ? "Load data & save estimates"
-                        : "Load candles & replay"}
+                        ? "Загрузить данные и сохранить оценки"
+                        : "Загрузить свечи и воспроизведение"}
                   </Button>
                   {busy && (
                     <Button variant="outline" onClick={invalidate}>
-                      Cancel
+                      Отмена
                     </Button>
                   )}
                   {result && (
                     <Button variant="outline" onClick={invalidate}>
-                      Show original chart
+                      Показать оригинальный график
                     </Button>
                   )}
                 </div>
@@ -280,8 +275,7 @@ export function TradeMarketData({
       </Card>
       {!result && saved?.saved && (
         <p className="text-xs text-muted-foreground">
-          Previously saved MAE/MFE estimates are shown below. Loading candles without the checkbox
-          keeps those saved estimates; it does not calculate new ones.
+          Ранее сохранённые оценки MAE/MFE показаны ниже. Загрузка свечей без флажка сохраняет эти оценки; новые не рассчитываются.
         </p>
       )}
       {result && result.bars.length > 0 ? (
@@ -298,44 +292,43 @@ export function TradeMarketData({
             aria-label="Market data feature status"
           >
             <div>
-              <p className="text-xs text-muted-foreground">Estimated MAE</p>
+              <p className="text-xs text-muted-foreground">Оценочный MAE</p>
               <p className="text-sm">
                 {busy
-                  ? "Loading candles…"
+                  ? "Загрузка свечей…"
                   : error
-                    ? "Data request failed"
+                    ? "Запрос данных не удался"
                     : saved?.saved
                       ? privacy
                         ? "••••"
                         : fmtMoney(saved.saved.estimate.mae!, trade.currency)
-                      : "Load market data to calculate"}
+                      : "Загрузите рыночные данные для расчёта"}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Estimated MFE</p>
+              <p className="text-xs text-muted-foreground">Оценочный MFE</p>
               <p className="text-sm">
                 {busy
-                  ? "Loading candles…"
+                  ? "Загрузка свечей…"
                   : error
-                    ? "Data request failed"
+                    ? "Запрос данных не удался"
                     : saved?.saved
                       ? privacy
                         ? "••••"
                         : fmtMoney(saved.saved.estimate.mfe!, trade.currency)
-                      : "Load market data to calculate"}
+                      : "Загрузите рыночные данные для расчёта"}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Trade replay</p>
+              <p className="text-xs text-muted-foreground">Воспроизведение сделки</p>
               <p className="text-sm">
-                {busy ? "Loading candles…" : "Available after candles load"}
+                {busy ? "Загрузка свечей…" : "Доступно после загрузки свечей"}
               </p>
             </div>
           </div>
           {result && (
             <p role="status" className="text-sm text-muted-foreground">
-              No candles were returned for this instrument and trade period. Check the symbol,
-              dataset and plan coverage.
+              Свечи не возвращены для этого инструмента и периода сделки. Проверьте символ, набор данных и покрытие плана.
             </p>
           )}
           <TradeChart trade={trade} executions={executions} />
@@ -345,296 +338,4 @@ export function TradeMarketData({
   );
 }
 
-function HistoricalReplay({
-  history,
-  trade,
-  executions,
-  privacy,
-}: {
-  history: TradeMarketResult;
-  trade: ChartTrade & { currency: string };
-  executions: ChartExecution[];
-  privacy: boolean;
-}) {
-  const [count, setCount] = useState(history.bars.length);
-  const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState("4");
-  useEffect(() => {
-    setCount(history.bars.length);
-    setPlaying(false);
-  }, [history]);
-  useEffect(() => {
-    if (!playing || privacy) return;
-    const timer = window.setInterval(
-      () => {
-        if (!document.hidden) setCount((current) => Math.min(current + 1, history.bars.length));
-      },
-      1000 / Number(speed),
-    );
-    return () => window.clearInterval(timer);
-  }, [playing, privacy, speed, history.bars.length]);
-  useEffect(() => {
-    if (count >= history.bars.length || privacy) setPlaying(false);
-  }, [count, privacy, history.bars.length]);
-  const complete = count === history.bars.length;
-  const frame = useMemo(
-    () => replayFrame(history, history.estimate.priceBasisMismatch ? [] : executions, count),
-    [history, executions, count],
-  );
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Historical candles</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-xs text-muted-foreground">
-          {history.provider} · {history.symbol} · {history.resolution} ·{" "}
-          {history.bars.length.toLocaleString()} candles · Retrieved{" "}
-          {new Date(history.fetchedAt).toLocaleString()}
-        </p>
-        {privacy ? (
-          <p className="text-sm text-muted-foreground">
-            Historical prices and excursion amounts are hidden in privacy mode.
-          </p>
-        ) : (
-          <>
-            {history.estimate.priceBasisMismatch && (
-              <p role="status" className="rounded-md border p-3 text-sm text-muted-foreground">
-                The market candles and recorded fill prices do not match. Replay shows market
-                prices; fill labels and MAE/MFE estimates are withheld. See the data limits below.
-              </p>
-            )}
-            <ReplayChart history={history} nextFrame={frame} />
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setPlaying(false);
-                  setCount(1);
-                }}
-              >
-                Restart
-              </Button>
-              <Button
-                onClick={() => {
-                  if (complete) setCount(1);
-                  setPlaying(!playing);
-                }}
-              >
-                {playing ? "Pause" : "Play"}
-              </Button>
-              <Button
-                variant="outline"
-                disabled={complete}
-                onClick={() => {
-                  setPlaying(false);
-                  setCount((current) => Math.min(current + 1, history.bars.length));
-                }}
-              >
-                Next candle
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setPlaying(false);
-                  setCount(history.bars.length);
-                }}
-              >
-                Show all
-              </Button>
-              <OptionSelect
-                aria-label="Replay speed"
-                className="w-24"
-                value={speed}
-                onValueChange={setSpeed}
-              >
-                <option value="1">1×</option>
-                <option value="2">2×</option>
-                <option value="4">4×</option>
-              </OptionSelect>
-            </div>
-            <input
-              aria-label="Replay position"
-              type="range"
-              min={1}
-              max={history.bars.length}
-              value={count}
-              className="w-full accent-primary"
-              onChange={(event) => {
-                setPlaying(false);
-                setCount(Number(event.target.value));
-              }}
-            />
-            <p className="text-xs text-muted-foreground">
-              {count} / {history.bars.length} candles · Through{" "}
-              {new Date(frame.through).toISOString()} (UTC). Candles are revealed at bar close; this
-              is not a tick-by-tick simulation.
-            </p>
-          </>
-        )}
-        <div className="grid grid-cols-2 gap-3 rounded-lg border p-3">
-          <div>
-            <p className="text-xs text-muted-foreground">Estimated MAE · adverse</p>
-            <p className="font-medium">
-              {privacy
-                ? "••••"
-                : !complete
-                  ? "Hidden during replay"
-                  : history.estimate.mae === null
-                    ? "Unavailable"
-                    : fmtMoney(history.estimate.mae, trade.currency).replace(/^\+/, "")}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Estimated MFE · favorable</p>
-            <p className="font-medium">
-              {privacy
-                ? "••••"
-                : !complete
-                  ? "Hidden during replay"
-                  : history.estimate.mfe === null
-                    ? "Unavailable"
-                    : fmtMoney(history.estimate.mfe, trade.currency).replace(/^\+/, "")}
-            </p>
-          </div>
-        </div>
-        <details className="text-xs text-muted-foreground" open>
-          <summary className="cursor-pointer">Data coverage & estimate limits</summary>
-          <ul className="mt-2 list-disc space-y-1 pl-4">
-            {[...history.warnings, ...history.estimate.warnings].map((warning) => (
-              <li key={warning}>{warning}</li>
-            ))}
-          </ul>
-        </details>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ReplayChart({
-  history,
-  nextFrame,
-}: {
-  history: TradeMarketResult;
-  nextFrame: ReturnType<typeof replayFrame<ChartExecution>>;
-}) {
-  const host = useRef<HTMLDivElement>(null);
-  const chart = useRef<Vela | null>(null);
-  const frame = useRef(nextFrame);
-  const latest = useRef(nextFrame);
-  latest.current = nextFrame;
-  const update = useRef<(() => void) | null>(null);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let disposed = false;
-    let cleanup = () => {};
-    setError("");
-    void (async () => {
-      const { Vela, registerNativeIndicator, unregisterNativeIndicator } =
-        await import("@luxalgo/vela");
-      if (disposed || !host.current) return;
-      const type = `replay-fills-${crypto.randomUUID()}`;
-      registerNativeIndicator({
-        type,
-        title: "Recorded fills",
-        paneHint: "price",
-        overlay: true,
-        inputsSchema: () => [],
-        defaultInputs: () => ({}),
-        create: () => ({
-          start(ctx) {
-            ctx.emit({
-              labels: frame.current.fills.map((fill, index) => ({
-                id: `fill-${index}`,
-                paneId: "price",
-                xloc: "bar_time" as const,
-                x: Date.parse(fill.executedAt),
-                y: fill.price,
-                yloc: "price" as const,
-                text: `${fill.side.toUpperCase()} ${fill.quantity}`,
-                style: "label_left" as const,
-                color: fill.side === "buy" ? "#087f23" : "#bd2626",
-                textColor: "#ffffff",
-                size: "small" as const,
-                textAlign: "center" as const,
-                fontFamily: "default" as const,
-                overlay: true,
-              })),
-            });
-            ctx.setStatus("idle");
-          },
-          onBars() {},
-          onViewport() {},
-          setInputs() {},
-          suspend() {},
-          resume() {},
-          stop() {},
-        }),
-      });
-      const dark = () => document.documentElement.classList.contains("dark");
-      const instance = new Vela(host.current, {
-        symbol: history.symbol,
-        timeframe: { "1m": "1", "5m": "5", "15m": "15", "1h": "60", "1d": "1D" }[
-          history.resolution
-        ],
-        data: latest.current.bars,
-        live: false,
-        height: 420,
-        theme: dark() ? "dark" : "light",
-        priceStyle: "candles",
-        volume: true,
-        drawings: false,
-      });
-      chart.current = instance;
-      frame.current = latest.current;
-      instance.addNativeIndicator(type);
-      let updating = false;
-      // Coalesce rapid scrubbing/ticks instead of queuing expensive Vela reloads.
-      const flush = async () => {
-        if (updating || disposed) return;
-        updating = true;
-        try {
-          do {
-            frame.current = latest.current;
-            await instance.setMarket({ data: frame.current.bars });
-          } while (!disposed && frame.current !== latest.current);
-        } catch {
-          if (!disposed) setError("The replay chart could not be updated.");
-        } finally {
-          updating = false;
-        }
-      };
-      update.current = () => {
-        void flush();
-      };
-      const observer = new MutationObserver(() => instance.setTheme(dark() ? "dark" : "light"));
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-      cleanup = () => {
-        update.current = null;
-        observer.disconnect();
-        instance.destroy();
-        unregisterNativeIndicator(type);
-        if (chart.current === instance) chart.current = null;
-      };
-    })().catch(() => {
-      if (!disposed) setError("The historical chart could not be rendered.");
-    });
-    return () => {
-      disposed = true;
-      cleanup();
-    };
-  }, [history]);
-  useEffect(() => {
-    update.current?.();
-  }, [nextFrame, history]);
-  return (
-    <>
-      {error && (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
-      <div ref={host} className="h-[420px] overflow-hidden rounded-lg border" />
-    </>
-  );
-}
+// ... остальная часть компонента HistoricalReplay и ReplayChart с переводами

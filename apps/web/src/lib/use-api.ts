@@ -10,7 +10,7 @@ export interface ApiState<T> {
   refresh: () => void;
 }
 
-/** Deduplicate concurrent reads and cancel requests when their last consumer leaves. */
+/** Дедуплицируем конкурентные чтения и отменяем запросы, когда их последний потребитель уходит. */
 export const useApi = <T>(url: string | null): ApiState<T> => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,8 +33,8 @@ export const useApi = <T>(url: string | null): ApiState<T> => {
     request.promise
       .then((body) => {
         if (cancelled) return;
-        // Render fresh data as a transition so React yields to the browser mid-render
-        // instead of blocking the main thread for the whole page.
+        // Рендерим свежие данные как transition, чтобы React уступал браузеру во время рендера
+        // вместо блокировки главного потока на всю страницу.
         startTransition(() => {
           setData(body);
           setDataUrl(url);
@@ -44,7 +44,7 @@ export const useApi = <T>(url: string | null): ApiState<T> => {
       })
       .catch((cause: unknown) => {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : "Network error");
+          setError(cause instanceof Error ? cause.message : "Ошибка сети");
           setData(null);
           setDataUrl(url);
           setLoading(false);

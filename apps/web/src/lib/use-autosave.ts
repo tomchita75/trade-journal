@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-/** Merge rapid edits and send one request at a time. Failed writes retain the latest fields for retry. */
+/** Объединяем быстрые правки и отправляем один запрос за раз. Неудачные записи сохраняют последние поля для повторной попытки. */
 export function useAutosave(url: string, method: "PATCH" | "PUT" = "PATCH", onSaved?: () => void) {
   const [status, setStatus] = useState("");
   const pending = useRef<Record<string, unknown>>({});
@@ -24,15 +24,15 @@ export function useAutosave(url: string, method: "PATCH" | "PUT" = "PATCH", onSa
             keepalive: JSON.stringify(body).length < 50000,
           });
           const result = await response.json();
-          if (!response.ok) throw new Error(result.error ?? "Save failed");
+          if (!response.ok) throw new Error(result.error ?? "Сохранение не удалось");
           if (mounted.current) {
-            setStatus(Object.keys(pending.current).length ? "Saving…" : "Saved");
+            setStatus(Object.keys(pending.current).length ? "Сохранение…" : "Сохранено");
             callback.current?.();
           }
         } catch (e) {
           pending.current = { ...body, ...pending.current };
           if (mounted.current)
-            setStatus(`Not saved: ${e instanceof Error ? e.message : "Connection failed"}`);
+            setStatus(`Не сохранено: ${e instanceof Error ? e.message : "Ошибка подключения"}`);
           break;
         }
       }
@@ -60,7 +60,7 @@ export function useAutosave(url: string, method: "PATCH" | "PUT" = "PATCH", onSa
   const save = useCallback(
     (body: Record<string, unknown>) => {
       pending.current = { ...pending.current, ...body };
-      setStatus("Saving…");
+      setStatus("Сохранение…");
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => void flush(), 500);
     },

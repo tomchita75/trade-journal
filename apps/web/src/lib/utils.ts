@@ -5,7 +5,7 @@ export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 const currencyFormatters = new Map<string, Intl.NumberFormat>();
 
-/** Signed money — the sign is ALWAYS in the text; color never carries P&L alone. */
+/** Деньги со знаком — знак ВСЕГДА в тексте; цвет никогда не несёт P&L один. */
 export const fmtMoney = (value: number, currency = "USD"): string => {
   let formatter = currencyFormatters.get(currency);
   if (!formatter) {
@@ -35,12 +35,12 @@ export const fmtPercent = (value: number | null, digits = 1): string =>
 export const fmtDuration = (ms: number | null | undefined): string => {
   if (ms === null || ms === undefined) return "–";
   const minutes = Math.round(ms / 60_000);
-  if (minutes < 1) return "< 1m";
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return "< 1 мин";
+  if (minutes < 60) return `${minutes} мин`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ${minutes % 60}m`;
+  if (hours < 24) return `${hours} ч ${minutes % 60} мин`;
   const days = Math.floor(hours / 24);
-  return `${days}d ${hours % 24}h`;
+  return `${days} дн ${hours % 24} ч`;
 };
 
 export const pnlClass = (value: number): string =>

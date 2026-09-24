@@ -61,16 +61,16 @@ export function TimeZonePicker({
           variant="outline"
           className="w-full min-w-0 justify-between font-normal"
           disabled={disabled}
-          aria-label={`${label}: ${value || "Choose a timezone"}`}
+          aria-label={`${label}: ${value || "Выберите часовой пояс"}`}
           aria-describedby={describedBy}
         >
-          <span className="truncate">{value ? timeZoneLabel(value) : "Choose a timezone"}</span>
+          <span className="truncate">{value ? timeZoneLabel(value) : "Выберите часовой пояс"}</span>
           <ChevronsUpDown className="shrink-0 text-muted-foreground" aria-hidden="true" />
         </Button>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          aria-label={`${label} options`}
+          aria-label={`${label}: варианты`}
           sideOffset={6}
           collisionPadding={12}
           className="journal-popup journal-menu-surface z-50 flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-24px)] flex-col overflow-hidden rounded-xl border bg-popover p-1.5 text-popover-foreground"
@@ -87,12 +87,12 @@ export function TimeZonePicker({
             <Input
               ref={input}
               role="combobox"
-              aria-label="Search timezones"
+              aria-label="Искать часовые пояса"
               aria-expanded={open}
               aria-autocomplete="list"
               aria-controls={listId}
               aria-activedescendant={activeId}
-              placeholder="Search city or timezone…"
+              placeholder="Искать город или часовой пояс…"
               className="pl-8"
               value={query}
               autoComplete="off"
@@ -122,7 +122,7 @@ export function TimeZonePicker({
           <div
             id={listId}
             role="listbox"
-            aria-label="Timezones"
+            aria-label="Часовые пояса"
             className="mt-1 min-h-0 overflow-y-auto overscroll-contain"
           >
             {options.map((zone, index) => (
@@ -149,8 +149,8 @@ export function TimeZonePicker({
           </div>
           <p role="status" className="shrink-0 px-2 pb-1 pt-2 text-xs text-muted-foreground">
             {options.length
-              ? `${options.length} timezone${options.length === 1 ? "" : "s"}`
-              : "No matching timezone. Try a city or a full timezone name."}
+              ? `${options.length} часов${options.length === 1 ? "ой пояс" : options.length < 5 ? "ых пояса" : "ых поясов"}`
+              : "Нет совпадений. Попробуйте название города или полный часовой пояс."}
           </p>
         </Popover.Content>
       </Popover.Portal>

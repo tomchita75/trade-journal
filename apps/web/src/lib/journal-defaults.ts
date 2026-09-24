@@ -79,24 +79,24 @@ export function parseJournalDefaults(
   accountExists: (id: string) => boolean,
 ): ParsedDefaults {
   if (!input || typeof input !== "object" || Array.isArray(input))
-    return { error: "Defaults must be an object." };
-  if (!onlyKeys(input, DEFAULT_KEYS)) return { error: "Defaults contain unknown fields." };
+    return { error: "Настройки по умолчанию должны быть объектом." };
+  if (!onlyKeys(input, DEFAULT_KEYS)) return { error: "Настройки по умолчанию содержат неизвестные поля." };
   const b = input as Record<string, unknown>;
   if (
     !isFinite(b.breakeven) ||
     b.breakeven < 0 ||
     !["money", "percent"].includes(b.breakevenMode as string)
   )
-    return { error: "Breakeven must be a nonnegative amount or percentage." };
+    return { error: "Безубыток должен быть неотрицательной суммой или процентом." };
   for (const key of ["feeRules", "riskRules"] as const) {
     const list = b[key];
     if (!Array.isArray(list) || list.length > MAX_DEFAULT_RULES)
-      return { error: `Use at most ${MAX_DEFAULT_RULES} defaults per type.` };
+      return { error: `Максимум ${MAX_DEFAULT_RULES} правил на тип.` };
     for (const r of list) {
       if (!r || typeof r !== "object" || Array.isArray(r))
-        return { error: "Each default must be an object." };
+        return { error: "Каждое правило должно быть объектом." };
       if (!onlyKeys(r, key === "feeRules" ? FEE_KEYS : RISK_KEYS))
-        return { error: "A default contains unknown fields." };
+        return { error: "Правило содержит неизвестные поля." };
       const rule = r as Record<string, unknown>;
       if (
         !isText(rule.id, 100) ||
@@ -104,14 +104,14 @@ export function parseJournalDefaults(
         (rule.accountId && !accountExists(rule.accountId)) ||
         !isText(rule.symbol, 80)
       )
-        return { error: "Invalid default account or symbol." };
+        return { error: "Неверный счёт или символ по умолчанию." };
       if (key === "feeRules") {
         if (
           !isFinite(rule.amount) ||
           rule.amount < 0 ||
           !["unit", "execution"].includes(rule.mode as string)
         )
-          return { error: "Fees must be nonnegative." };
+          return { error: "Комиссии должны быть неотрицательными." };
       } else if (
         !isFinite(rule.stop) ||
         rule.stop <= 0 ||
@@ -119,7 +119,7 @@ export function parseJournalDefaults(
         rule.target <= 0 ||
         !["price", "percent"].includes(rule.mode as string)
       )
-        return { error: "Stop and target distances must be positive." };
+        return { error: "Расстояния стоп-лосса и цели должны быть положительными." };
     }
   }
   const feeRules = (b.feeRules as Record<string, unknown>[]).map((r) => ({

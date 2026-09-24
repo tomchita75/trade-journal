@@ -12,7 +12,7 @@ const compactFormatters = new Map<string, Intl.NumberFormat>();
 const compactMoney = (value: number, currency: string) => {
   let formatter = compactFormatters.get(currency);
   if (!formatter) {
-    formatter = new Intl.NumberFormat("en-US", {
+    formatter = new Intl.NumberFormat("ru-RU", {
       style: "currency",
       currency,
       notation: "compact",
@@ -45,13 +45,13 @@ export function CalendarPnl({
   return (
     <div className="journal-calendar min-w-0 w-full">
       <div className="journal-calendar-grid grid gap-1 text-xs">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((weekday) => (
+        {["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"].map((weekday) => (
           <div key={weekday} className="px-1 pb-1 text-muted-foreground">
             {weekday}
           </div>
         ))}
         <div className="journal-calendar-week-heading px-1 pb-1 text-right text-muted-foreground">
-          Week
+          Неделя
         </div>
         {calendar.weeks.map((week, weekIndex) => (
           <CalendarWeekRow
@@ -65,14 +65,14 @@ export function CalendarPnl({
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs sm:text-sm">
         <span className="text-muted-foreground">
-          {calendar.tradingDays} trading days {monetary && <>· {calendar.winningDays} green</>}
+          {calendar.tradingDays} торговых дней {monetary && `· ${calendar.winningDays} прибыльных`}
         </span>
         <span>
-          Month:{" "}
+          Месяц:{" "}
           {monetary ? (
             <Pnl value={calendar.monthNetPnl} currency={currency} className="font-semibold" />
           ) : (
-            <span className="text-muted-foreground">Multiple currencies</span>
+            <span className="text-muted-foreground">Несколько валют</span>
           )}
         </span>
       </div>
@@ -110,12 +110,12 @@ function CalendarWeekRow({
           <HoverHint
             key={day.date}
             heading={day.date}
-            content={`${!monetary ? "Multiple currencies" : privacy ? "P&L hidden" : fmtMoney(day.netPnl, currency)} · ${day.trades} trades`}
+            content={`${!monetary ? "Несколько валют" : privacy ? "P&L скрыт" : fmtMoney(day.netPnl, currency)} · ${day.trades} сделок`}
           >
             <Link
               key={day.date}
               href={`/journal/${day.date}?${search}`}
-              aria-label={`${day.date}, ${!monetary ? "Multiple currencies" : privacy ? "P&L hidden" : fmtMoney(day.netPnl, currency)}, ${day.trades} trades`}
+              aria-label={`${day.date}, ${!monetary ? "Несколько валют" : privacy ? "P&L скрыт" : fmtMoney(day.netPnl, currency)}, ${day.trades} сделок`}
               className={cn(
                 "journal-calendar-day journal-calendar-day-link min-w-0 rounded-md border",
                 !traded && "border-transparent bg-muted/30",
@@ -153,7 +153,7 @@ function CalendarWeekRow({
                     )}
                   </div>
                   <div className="journal-calendar-trades text-muted-foreground">
-                    {day.trades} trade{day.trades === 1 ? "" : "s"}
+                    {day.trades} сдел{day.trades === 1 ? "ка" : day.trades >= 2 && day.trades <= 4 ? "ки" : "ок"}
                   </div>
                 </>
               )}
@@ -162,13 +162,13 @@ function CalendarWeekRow({
         );
       })}
       <div className="journal-calendar-week flex rounded-md bg-muted/40 p-1.5">
-        <span className="journal-calendar-week-label text-muted-foreground">Week total</span>
+        <span className="journal-calendar-week-label text-muted-foreground">Итого за неделю</span>
         {week.weekTrades > 0 ? (
           <>
             {monetary && (
               <Pnl value={week.weekNetPnl} currency={currency} className="font-medium" />
             )}
-            <span className="text-muted-foreground">{week.weekTrades} trades</span>
+            <span className="text-muted-foreground">{week.weekTrades} сделок</span>
           </>
         ) : (
           <span className="text-muted-foreground">–</span>

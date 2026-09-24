@@ -20,7 +20,7 @@ export default function LoginPage() {
       router.push("/");
       router.refresh();
     } catch {
-      setError("Wrong password");
+      setError("Неверный пароль");
     }
   };
 
@@ -37,12 +37,12 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="Password"
+              placeholder="Пароль"
               autoFocus
             />
             {error && <p className="text-center text-xs text-loss">{error}</p>}
             <Button type="submit" className="w-full">
-              Unlock
+              Войти
             </Button>
           </form>
         </CardContent>

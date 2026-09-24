@@ -41,7 +41,7 @@ export function VoiceNote({
     const Constructor = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
     if (!Constructor) {
       showError(
-        "This browser does not support speech recognition. Open the journal in Chrome, or use keyboard dictation below.",
+        "Этот браузер не поддерживает распознавание речи. Откройте журнал в Chrome или используйте клавиатурную диктовку ниже.",
       );
       return;
     }
@@ -76,19 +76,19 @@ export function VoiceNote({
             size="sm"
             onClick={toggle}
             aria-pressed={state !== "idle"}
-            title={state === "idle" ? "Dictate your note" : "Stop dictation"}
+            title={state === "idle" ? "Диктовать заметку" : "Остановить диктовку"}
           >
             {state === "idle" ? <Mic /> : <MicOff />}
             {state === "starting"
-              ? "Starting…"
+              ? "Запуск…"
               : state === "listening"
-                ? "Listening · Stop"
-                : "Dictate"}
+                ? "Слушаю · Стоп"
+                : "Диктовать"}
           </Button>
         </Popover.Anchor>
         <Popover.Portal>
           <Popover.Content
-            aria-label="Dictation help"
+            aria-label="Помощь с диктовкой"
             align="end"
             sideOffset={8}
             collisionPadding={12}
@@ -102,9 +102,7 @@ export function VoiceNote({
           >
             <p role="alert">{error}</p>
             <p className="text-muted-foreground">
-              Keyboard dictation types directly into your note. Use your keyboard’s microphone key
-              or your system’s dictation shortcut. On Mac, enable Dictation in System Settings →
-              Keyboard.
+              Клавиатурная диктовка вводит текст прямо в заметку. Используйте клавишу микрофона на клавиатуре или системное сочетание клавиш диктовки. На Mac включите диктовку в Системных настройках → Клавиатура.
             </p>
             <div className="flex flex-wrap gap-2">
               <Button
@@ -117,17 +115,17 @@ export function VoiceNote({
                   onPrepare();
                 }}
               >
-                Use keyboard dictation
+                Использовать клавиатурную диктовку
               </Button>
               <Button type="button" size="sm" variant="ghost" onClick={() => setError("")}>
-                Dismiss
+                Закрыть
               </Button>
             </div>
           </Popover.Content>
         </Popover.Portal>
         {keyboardHint && (
           <span role="status" className="sr-only">
-            Note ready. Press your keyboard’s microphone key or dictation shortcut to speak.
+            Заметка готова. Нажмите клавишу микрофона на клавиатуре или сочетание клавиш диктовки, чтобы говорить.
           </span>
         )}
       </div>

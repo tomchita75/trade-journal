@@ -23,7 +23,7 @@ export function RuleChecklist({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Strategy rule review</CardTitle>
+        <CardTitle>Проверка правил стратегии</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {data?.name ? (
@@ -31,13 +31,13 @@ export function RuleChecklist({
             <p className="text-sm font-medium">{data.name}</p>
             <p className="text-xs text-muted-foreground">
               {evaluated.length
-                ? `${Math.round((followed / evaluated.length) * 100)}% followed · `
+                ? `${Math.round((followed / evaluated.length) * 100)}% соблюдено · `
                 : ""}
-              {evaluated.length}/{data.rules.length} rules assessed
+              {evaluated.length}/{data.rules.length} правил оценено
             </p>
             {data.rules.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                Add rules to this playbook to review adherence.
+                Добавьте правила в этот плейбук для проверки соблюдения.
               </p>
             )}
             {data.rules.map((r) => (
@@ -63,16 +63,16 @@ export function RuleChecklist({
                     }
                   }}
                 >
-                  <option value="unreviewed">Not assessed</option>
-                  <option value="true">Followed</option>
-                  <option value="false">Broken</option>
+                  <option value="unreviewed">Не оценено</option>
+                  <option value="true">Соблюдено</option>
+                  <option value="false">Нарушено</option>
                 </OptionSelect>
               </label>
             ))}
           </>
         ) : (
           <p className="text-xs text-muted-foreground">
-            Assign a playbook to check its rules for this trade.
+            Назначьте плейбук для проверки его правил для этой сделки.
           </p>
         )}
         {(error || failure) && (

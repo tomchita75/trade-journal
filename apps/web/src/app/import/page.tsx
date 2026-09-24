@@ -73,21 +73,21 @@ function ImportView() {
   const router = useRouter();
   return (
     <div>
-      <FilterBar title="Import trades" />
+      <FilterBar title="Импорт сделок" />
       <div className="mx-auto max-w-3xl p-4">
         <Tabs defaultValue="file">
           <TabsList>
             <TabsTrigger value="file" className="max-sm:px-2 max-sm:text-xs">
               <FileUp className="mr-1.5 hidden h-4 w-4 min-[420px]:block" />
-              File upload
+              Загрузка файла
             </TabsTrigger>
             <TabsTrigger value="sync" className="max-sm:px-2 max-sm:text-xs">
               <Landmark className="mr-1.5 hidden h-4 w-4 min-[420px]:block" />
-              Broker sync
+              Синхронизация с брокером
             </TabsTrigger>
             <TabsTrigger value="manual" className="max-sm:px-2 max-sm:text-xs">
               <PencilLine className="mr-1.5 hidden h-4 w-4 min-[420px]:block" />
-              Manual
+              Вручную
             </TabsTrigger>
           </TabsList>
           <TabsContent value="file">
@@ -99,7 +99,7 @@ function ImportView() {
           <TabsContent value="manual">
             <Card>
               <CardHeader>
-                <CardTitle>Add executions manually</CardTitle>
+                <CardTitle>Добавить исполнения вручную</CardTitle>
               </CardHeader>
               <CardContent>
                 <ManualTradeEntry onSaved={() => router.push("/trades")} />
@@ -173,7 +173,7 @@ function FileImport() {
         }),
       );
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Import preview failed");
+      setError(cause instanceof Error ? cause.message : "Ошибка предпросмотра импорта");
     } finally {
       setBusy(false);
     }
@@ -196,7 +196,7 @@ function FileImport() {
         }),
       );
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Import preview failed");
+      setError(cause instanceof Error ? cause.message : "Ошибка предпросмотра импорта");
     } finally {
       setBusy(false);
     }
@@ -217,7 +217,7 @@ function FileImport() {
       );
       setMappingApplied(true);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Import preview failed");
+      setError(cause instanceof Error ? cause.message : "Ошибка предпросмотра импорта");
     } finally {
       setBusy(false);
     }
@@ -241,19 +241,18 @@ function FileImport() {
         mapping: mappingApplied ? mapping : undefined,
         fileName,
         symbol,
-        // Commit with the exact parsing zone used by the reviewed preview.
         timeZone: preview.timeZone,
       });
       const skippedNote =
         result.skipped && result.skipped > 0
-          ? ` ${result.skipped} invalid rows were skipped: ${(result.warnings ?? []).at(-1) ?? ""}`
+          ? ` ${result.skipped} неверных строк пропущено: ${(result.warnings ?? []).at(-1) ?? ""}`
           : "";
       alert(
-        `Imported ${result.inserted} executions (${result.duplicates} duplicates skipped, ${result.corrected ?? 0} fee corrections).${skippedNote}`,
+        `Импортировано ${result.inserted} исполнений (${result.duplicates} дубликатов пропущено, ${result.corrected ?? 0} исправлений комиссий).${skippedNote}`,
       );
       router.push(`/?accounts=${encodeURIComponent(accountId)}`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Import failed");
+      setError(cause instanceof Error ? cause.message : "Ошибка импорта");
     } finally {
       setBusy(false);
     }
@@ -265,7 +264,7 @@ function FileImport() {
     <div className="space-y-3">
       <Card>
         <CardHeader>
-          <CardTitle>Upload a statement or export</CardTitle>
+          <CardTitle>Загрузить отчёт или экспорт</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
@@ -273,11 +272,11 @@ function FileImport() {
               htmlFor="statement-timezone"
               className="mb-1 block text-xs text-muted-foreground"
             >
-              Statement timezone (IANA)
+              Часовой пояс отчёта (IANA)
             </Label>
             <TimeZonePicker
               id="statement-timezone"
-              label="Statement timezone"
+              label="Часовой пояс отчёта"
               value={timeZone}
               disabled={busy || !settingsData}
               describedBy="statement-timezone-help"
@@ -288,12 +287,12 @@ function FileImport() {
               }}
             />
             <p id="statement-timezone-help" className="mt-1 text-xs text-muted-foreground">
-              Choose the timezone used by your broker's statement. Timestamps with an explicit
-              offset keep that offset. Your journal displays times in {displayTimeZone}.
+              Выберите часовой пояс, используемый в отчёте вашего брокера. Временные метки с явным
+              смещением сохранят это смещение. Ваш журнал отображает время в {displayTimeZone}.
             </p>
             {timeZone && !validTimeZone && (
               <p role="alert" className="mt-1 text-xs text-loss">
-                Enter a valid IANA timezone, such as Europe/Helsinki.
+                Введите корректный часовой пояс IANA, например Europe/Helsinki.
               </p>
             )}
             {settingsError && (
@@ -304,11 +303,11 @@ function FileImport() {
           </div>
           <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center hover:border-ring">
             <FileUp className="h-6 w-6 text-muted-foreground" />
-            <span className="text-sm">{fileName || "Drop or choose a CSV / HTML statement"}</span>
+            <span className="text-sm">{fileName || "Перетащите или выберите CSV / HTML отчёт"}</span>
             <span className="text-xs text-muted-foreground">
-              Auto-detected:{" "}
+              Автоопределение:{" "}
               {formatData?.formats.map((format) => format.label.split(" (")[0]).join(", ")} —
-              anything else via column mapping.
+              остальное через маппинг колонок.
             </span>
             <input
               type="file"
@@ -323,7 +322,7 @@ function FileImport() {
           </label>
           {content && !preview && (
             <Button onClick={previewFile} disabled={busy || !validTimeZone} variant="outline">
-              {busy ? "Reading…" : "Preview file"}
+              {busy ? "Чтение…" : "Предпросмотр файла"}
             </Button>
           )}
 
@@ -335,7 +334,7 @@ function FileImport() {
           {preview?.needsSymbol && (
             <div className="flex flex-wrap items-end gap-2">
               <label className="min-w-0 flex-1 text-xs text-muted-foreground">
-                Symbol
+                Тикер
                 <Input
                   value={symbol}
                   onChange={(event) => setSymbol(event.target.value.toUpperCase())}
@@ -349,21 +348,21 @@ function FileImport() {
                 onClick={previewFile}
                 disabled={busy || !symbol.trim()}
               >
-                Preview
+                Предпросмотр
               </Button>
             </div>
           )}
           {preview?.needsMapping && preview.headers && (
             <div className="space-y-2 rounded-md border p-3">
               <p className="text-sm">
-                Format not recognized — map your columns (nothing is guessed silently):
+                Формат не распознан — сопоставьте ваши колонки (ничего не угадывается автоматически):
               </p>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
                 {mappingFields.map((field) => (
                   <div key={field}>
                     <Label className="mb-1 block text-xs capitalize text-muted-foreground">
-                      {field}
-                      {field === "fee" ? " (optional)" : ""}
+                      {field === "symbol" ? "Тикер" : field === "side" ? "Сторона" : field === "quantity" ? "Количество" : field === "price" ? "Цена" : field === "fee" ? "Комиссия (необязательно)" : field === "timestamp" ? "Время" : field}
+                      {field === "fee" ? " (необязательно)" : ""}
                     </Label>
                     <Select
                       value={mapping[field] ?? "none"}
@@ -372,7 +371,7 @@ function FileImport() {
                       }
                     >
                       <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="column" />
+                        <SelectValue placeholder="колонка" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">—</SelectItem>
@@ -398,7 +397,7 @@ function FileImport() {
                   !mapping.timestamp
                 }
               >
-                Preview with mapping
+                Предпросмотр с маппингом
               </Button>
             </div>
           )}
@@ -407,8 +406,8 @@ function FileImport() {
             <div className="space-y-2 rounded-md border p-3">
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <Badge variant="secondary">{preview.detected}</Badge>
-                <span>{preview.totals.executions} executions</span>
-                <span className="text-muted-foreground">· {preview.totals.symbols} symbols</span>
+                <span>{preview.totals.executions} исполнений</span>
+                <span className="text-muted-foreground">· {preview.totals.symbols} тикеров</span>
                 {preview.totals.from && (
                   <span className="text-muted-foreground">
                     · {dayKeyOf(preview.totals.from, displayTimeZone)} →{" "}
@@ -417,12 +416,12 @@ function FileImport() {
                 )}
                 {preview.totals.skippedRows > 0 && (
                   <span className="text-muted-foreground">
-                    · {preview.totals.skippedRows} rows skipped
+                    · {preview.totals.skippedRows} строк пропущено
                   </span>
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Statement timezone: {preview.timeZone}. Preview times: {displayTimeZone}.
+                Часовой пояс отчёта: {preview.timeZone}. Время предпросмотра: {displayTimeZone}.
               </p>
               {!!preview.executions?.length && (
                 <div className="space-y-1 border-t pt-2 text-xs">
@@ -437,14 +436,14 @@ function FileImport() {
                     </div>
                   ))}
                   {preview.totals.executions > 5 && (
-                    <p className="text-muted-foreground">Showing the first 5 executions.</p>
+                    <p className="text-muted-foreground">Показаны первые 5 исполнений.</p>
                   )}
                 </div>
               )}
               <p className="text-xs text-muted-foreground">
                 {preview.detected === "ninjatrader"
-                  ? "Recovering an older NinjaTrader import or correcting its timezone? Import the complete history into a new journal account, then compare totals. Keep the original account and its reviews until you have verified the recovery."
-                  : "Correcting a previous import? Remove the affected trades before importing again with a different timezone to avoid duplicates. Back up your data first."}
+                  ? "Восстанавливаете старый импорт NinjaTrader или исправляете часовой пояс? Импортируйте полную историю в новый аккаунт журнала, затем сравните итоги. Сохраните оригинальный аккаунт и его просмотры, пока не проверите восстановление."
+                  : "Исправляете предыдущий импорт? Удалите затронутые сделки перед повторным импортом с другим часовым поясом, чтобы избежать дубликатов. Сначала сделайте резервную копию данных."}
               </p>
               {preview.warnings?.map((warning, index) => (
                 <p key={index} className="text-xs text-muted-foreground">
@@ -489,7 +488,7 @@ function FileImport() {
                   (preview.detected === "ninjatrader" && !preview.reconciliation?.token)
                 }
               >
-                {busy ? "Importing…" : "Import"}
+                {busy ? "Импорт…" : "Импортировать"}
               </Button>
             </div>
           )}
@@ -504,8 +503,8 @@ function BrokerConnect() {
   const { data } = useApi<{ brokers: BrokerInfo[] }>("/api/brokers");
   const [brokerId, setBrokerId] = useState("");
   const [name, setName] = useState("");
-  const [credentials, setCredentials] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState(false);
+  const [marketType, setMarketType] = useState<"linear" | "spot">("linear");
+  const [credentials, setCredentials] = useState<Record<string, string>>({});  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const broker = data?.brokers.find((b) => b.id === brokerId) ?? null;
 
@@ -514,15 +513,22 @@ function BrokerConnect() {
     setBusy(true);
     setError(null);
     try {
-      const created = await postJson<{ id: string }>("/api/accounts", {
-        name: name || broker.displayName,
-        kind: "sync",
-        broker: broker.id,
-        credentials,
-      });
+     const created = await postJson<{ id: string }>("/api/accounts", {
+  name:
+    name ||
+    (broker.id === "bybit"
+      ? `${broker.displayName} ${marketType === "spot" ? "Spot" : "Futures"}`
+      : broker.displayName),
+  kind: "sync",
+  broker: broker.id,
+  credentials:
+    broker.id === "bybit"
+      ? { ...credentials, marketType }
+      : credentials,
+});
       router.push(`/?accounts=${encodeURIComponent(created.id)}`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Connection failed");
+      setError(cause instanceof Error ? cause.message : "Ошибка подключения");
     } finally {
       setBusy(false);
     }
@@ -531,20 +537,21 @@ function BrokerConnect() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Connect a broker (read-only keys, stored encrypted on YOUR machine)</CardTitle>
+        <CardTitle>Подключить брокера (ключи только для чтения, хранятся зашифрованными на ВАШЕМ устройстве)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <Label className="mb-1 block text-xs text-muted-foreground">Broker / exchange</Label>
+          <Label className="mb-1 block text-xs text-muted-foreground">Брокер / биржа</Label>
           <Select
             value={brokerId}
             onValueChange={(value) => {
-              setBrokerId(value);
-              setCredentials({});
-            }}
+  setBrokerId(value);
+  setMarketType("linear");
+  setCredentials({});
+}}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Choose a broker" />
+              <SelectValue placeholder="Выберите брокера" />
             </SelectTrigger>
             <SelectContent>
               {data?.brokers.map((b) => (
@@ -560,8 +567,36 @@ function BrokerConnect() {
             <p className="rounded-md bg-muted/60 p-2.5 text-xs text-muted-foreground">
               {broker.readOnlySetup}
             </p>
+{broker.id === "bybit" && (
+  <div>
+    <Label className="mb-1 block text-xs text-muted-foreground">
+      Рынок Bybit
+    </Label>
+
+    <Select
+      value={marketType}
+      onValueChange={(value) => setMarketType(value as "linear" | "spot")}
+    >
+      <SelectTrigger>
+        <SelectValue />
+      </SelectTrigger>
+
+      <SelectContent>
+        <SelectItem value="linear">
+          Фьючерсы — USDT / USDC Linear
+        </SelectItem>
+        <SelectItem value="spot">Спот</SelectItem>
+      </SelectContent>
+    </Select>
+
+    <p className="mt-1 text-xs text-muted-foreground">
+      Для каждого подключённого аккаунта синхронизируется только выбранный
+      рынок.
+    </p>
+  </div>
+)}
             <div>
-              <Label className="mb-1 block text-xs text-muted-foreground">Account name</Label>
+              <Label className="mb-1 block text-xs text-muted-foreground">Название аккаунта</Label>
               <Input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -586,7 +621,7 @@ function BrokerConnect() {
               onClick={connect}
               disabled={busy || broker.credentials.some((field) => !credentials[field.key])}
             >
-              {busy ? "Connecting…" : "Connect & sync"}
+              {busy ? "Подключение…" : "Подключить и синхронизировать"}
             </Button>
           </>
         )}

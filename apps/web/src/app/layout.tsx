@@ -10,16 +10,19 @@ import { THEME_INIT_SCRIPT } from "@/lib/theme";
 export const metadata: Metadata = {
   title: "Trade Journal",
   description:
-    "The open-source trade journal — broker sync, deep analytics, daily journaling, and AI-native reflection. Self-hosted, free forever.",
+    "Дневник трейдера с открытым исходным кодом — синхронизация с брокером, глубокая аналитика, ежедневное ведение журнала и ИИ-рефлексия. Самостоятельный хостинг, бесплатно навсегда.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="ru" className="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="min-h-screen font-sans antialiased">
+      <body
+  className="min-h-screen font-sans antialiased"
+  suppressHydrationWarning
+>
         <TooltipProvider delayDuration={350} skipDelayDuration={150}>
           <Suspense>
             <ThemeProvider>

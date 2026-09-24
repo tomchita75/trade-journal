@@ -57,20 +57,19 @@ export function TradeChart(props: {
     }));
   return (
     <figure className="rounded-lg border bg-card p-4">
-      <p className="mb-2 text-sm font-medium">Execution price change (%)</p>
+      <p className="mb-2 text-sm font-medium">Изменение цены исполнения (%)</p>
       {props.trade.avgEntry !== 0 && data.length ? (
         <EquityArea
           data={data}
           height={props.height ?? 340}
           valueFormat="percent"
-          valueLabel="Price change from average entry"
+          valueLabel="Изменение цены от среднего входа"
         />
       ) : (
-        <p className="text-sm text-muted-foreground">No execution prices available.</p>
+        <p className="text-sm text-muted-foreground">Нет доступных цен исполнения.</p>
       )}
       <figcaption className="mt-2 text-xs text-muted-foreground">
-        Recorded fills as a percentage of average entry. Privacy mode keeps prices and monetary P&L
-        hidden.
+        Записанные исполнения в процентах от среднего входа. Режим приватности скрывает цены и денежный P&L.
       </figcaption>
     </figure>
   );
@@ -118,7 +117,7 @@ function PriceChart({
       const type = `journal-trade-${trade.key.replace(/[^a-zA-Z0-9]/g, "-")}`;
       registerNativeIndicator({
         type,
-        title: "Trade",
+        title: "Сделка",
         shortTitle: trade.symbol,
         paneHint: "price",
         overlay: true,
@@ -133,7 +132,7 @@ function PriceChart({
               x: Date.parse(execution.executedAt),
               y: execution.price,
               yloc: (execution.side === "buy" ? "belowbar" : "abovebar") as "belowbar" | "abovebar",
-              text: `${execution.side === "buy" ? "▲ BUY" : "▼ SELL"} ${execution.quantity}`,
+              text: `${execution.side === "buy" ? "▲ ПОКУПКА" : "▼ ПРОДАЖА"} ${execution.quantity}`,
               style: (execution.side === "buy" ? "triangleup" : "triangledown") as
                 "triangleup" | "triangledown",
               color: execution.side === "buy" ? profitColor : lossColor,
@@ -253,8 +252,7 @@ function PriceChart({
     <figure>
       <div ref={hostRef} style={{ height }} className="overflow-hidden rounded-lg border" />
       <figcaption className="mt-1.5 px-1 text-xs text-muted-foreground">
-        Price path from recorded fills. To view market candles, choose a data source and load
-        history in Market data &amp; replay.
+        Путь цены по записанным исполнениям. Для просмотра рыночных свечей выберите источник данных и загрузите историю в «Рыночные данные и воспроизведение».
       </figcaption>
     </figure>
   );

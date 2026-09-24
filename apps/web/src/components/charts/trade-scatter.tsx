@@ -49,7 +49,7 @@ export function TradeScatter({
     [points],
   );
   const date = useMemo(
-    () => new Intl.DateTimeFormat("en", { timeZone, dateStyle: "medium", timeStyle: "short" }),
+    () => new Intl.DateTimeFormat("ru", { timeZone, dateStyle: "medium", timeStyle: "short" }),
     [timeZone],
   );
   const yLabel = (n: number) =>
@@ -68,7 +68,7 @@ export function TradeScatter({
       <ResponsiveContainer width="100%" height="100%">
         <ScatterChart
           margin={{ top: 12, right: 24, bottom: 8, left: 0 }}
-          aria-label="Individual trade outcomes. Select a point to inspect; all trades also have links in the table below."
+          aria-label="Отдельные исходы сделок. Выберите точку для изучения; все сделки также имеют ссылки в таблице ниже."
         >
           <CartesianGrid stroke={tokens.gridline} />
           <XAxis
@@ -103,23 +103,23 @@ export function TradeScatter({
                   <p className="font-medium">
                     {point.symbol} · {point.direction}
                   </p>
-                  <p className="text-xs">Closed {date.format(new Date(point.closedAt))}</p>
+                  <p className="text-xs">Закрыта {date.format(new Date(point.closedAt))}</p>
                   <p>
                     {x === "durationMinutes"
-                      ? `${point.x.toLocaleString(undefined, { maximumFractionDigits: 2 })} minutes`
+                      ? `${point.x.toLocaleString(undefined, { maximumFractionDigits: 2 })} мин`
                       : x === "entryMinute"
-                        ? `${clockLabel(point.x)} entry`
-                        : `Estimated ${x.toUpperCase()}: ${xLabel(point.x)}`}
+                        ? `${clockLabel(point.x)} вход`
+                        : `Оценочный ${x.toUpperCase()}: ${xLabel(point.x)}`}
                   </p>
                   <p>
                     {y === "netPnl"
-                      ? "Net P&L"
+                      ? "Чистый P&L"
                       : y === "realizedR"
-                        ? "Realized R"
-                        : `Estimated ${y.toUpperCase()}`}
+                        ? "Реализованный R"
+                        : `Оценочный ${y.toUpperCase()}`}
                     : {yLabel(point.y)}
                   </p>
-                  <p className="text-xs text-muted-foreground">Select to inspect this trade</p>
+                  <p className="text-xs text-muted-foreground">Выберите для изучения этой сделки</p>
                 </div>
               ) : null;
             }}
@@ -128,7 +128,7 @@ export function TradeScatter({
             <Scatter
               key={index}
               data={data}
-              name={["Positive net P&L", "Negative net P&L", "Zero net P&L"][index]}
+              name={["Положительный чистый P&L", "Отрицательный чистый P&L", "Нулевой чистый P&L"][index]}
               shape="circle"
               fill={[tokens.profitFill, tokens.loss, tokens.inkMuted][index]}
               fillOpacity={0.7}

@@ -41,7 +41,7 @@ export function RollingTradeChart({
         <LineChart
           data={data}
           margin={{ top: 12, right: 14, bottom: 4, left: 0 }}
-          aria-label={`${rate ? "Win rate" : "Average net P&L"} over 20-trade windows. Exact values and links follow below.`}
+          aria-label={`${rate ? "Процент побед" : "Средний чистый P&L"} по окнам из 20 сделок. Точные значения и ссылки ниже.`}
         >
           <CartesianGrid stroke={tokens.gridline} vertical={false} />
           <XAxis
@@ -76,9 +76,9 @@ export function RollingTradeChart({
             contentStyle={tooltipStyle(tokens)}
             labelFormatter={(label) => {
               const point = data.find((point) => point.sequence === Number(label));
-              return `Trade #${label}${point ? ` · ${new Intl.DateTimeFormat("en", { timeZone, month: "short", day: "numeric", year: "numeric" }).format(new Date(point.closedAt))}` : ""}`;
+              return `Сделка #${label}${point ? ` · ${new Intl.DateTimeFormat("ru", { timeZone, month: "short", day: "numeric", year: "numeric" }).format(new Date(point.closedAt))}` : ""}`;
             }}
-            formatter={(value) => [format(Number(value)), "Last 20 trades"]}
+            formatter={(value) => [format(Number(value)), "Последние 20 сделок"]}
           />
           <Line
             dataKey={metric}

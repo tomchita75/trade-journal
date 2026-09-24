@@ -1,4 +1,4 @@
-/** Attachment fields included in the JSON export. Binaries stay on disk. */
+/** Поля вложений включены в JSON-экспорт. Бинарные файлы остаются на диске. */
 export interface ExportedAttachment {
   id: string;
   ownerType: string;
@@ -10,12 +10,12 @@ export interface ExportedAttachment {
 }
 
 export const EXPORT_ATTACHMENTS_NOTE =
-  "Attachments are listed as metadata only. Their binary contents live in the data directory (JOURNAL_DATA_DIR, default ./data), which remains the complete backup.";
+  "Вложения перечислены только как метаданные. Их бинарное содержимое находится в директории данных (JOURNAL_DATA_DIR, по умолчанию ./data), которая остаётся полной резервной копией.";
 
 /**
- * Strip attachment binaries from an export row. Embedding every file (up to
- * 8 MB each) as base64 in one in-memory JSON document can exhaust memory, so
- * the export carries metadata only.
+ * Удалить бинарные файлы вложений из строки экспорта. Встраивание каждого файла (до
+ * 8 МБ каждый) как base64 в один JSON-документ в памяти может исчерпать память, поэтому
+ * экспорт содержит только метаданные.
  */
 export const attachmentExportRecord = (row: {
   id: string;
