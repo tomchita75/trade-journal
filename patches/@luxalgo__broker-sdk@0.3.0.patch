@@ -1,0 +1,187 @@
+diff --git a/dist/chunk-JAL36ZHN.js b/dist/chunk-JAL36ZHN.js
+index c54b8c06eeea06bcf13f495a774c3d835fd8facc..10b576e19e42bd892cb5bf78431c7a156f71e113 100644
+--- a/dist/chunk-JAL36ZHN.js
++++ b/dist/chunk-JAL36ZHN.js
+@@ -86,11 +86,13 @@ import { createHmac as createHmac2 } from "crypto";
+ var BYBIT_API = "https://api.bybit.com";
+ var RECV_WINDOW = "10000";
+ var normalize2 = (raw) => {
+-  const account = raw.result?.list?.[0];
++  const account = raw.wallet?.result?.list?.[0];
+   const positions = [];
++
+   for (const entry of account?.coin ?? []) {
+     const quantity = asFiniteNumber(entry.walletBalance);
+     if (quantity === void 0 || quantity <= 0) continue;
++
+     const marketValue = asFiniteNumber(entry.usdValue);
+     positions.push({
+       symbol: entry.coin,
+@@ -99,8 +101,43 @@ var normalize2 = (raw) => {
+       assetClass: "crypto"
+     });
+   }
++
+   const totalEquity = asFiniteNumber(account?.totalEquity);
+-  const equity = totalEquity ?? positions.reduce((sum, position) => sum + (position.marketValue ?? 0), 0);
++  const equity =
++    totalEquity ??
++    positions.reduce((sum, position) => sum + (position.marketValue ?? 0), 0);
++
++  const trades = (raw.executions?.result?.list ?? [])
++    .map((execution) => {
++      const quantity = asFiniteNumber(execution.execQty);
++      const price = asFiniteNumber(execution.execPrice);
++      const fee = asFiniteNumber(execution.execFee) ?? 0;
++      const executedAtMs = asFiniteNumber(execution.execTime);
++
++      if (
++        !execution.execId ||
++        !execution.symbol ||
++        !quantity ||
++        quantity <= 0 ||
++        price === void 0 ||
++        !execution.side ||
++        executedAtMs === void 0
++      ) {
++        return null;
++      }
++
++      return {
++        id: execution.execId,
++        symbol: execution.symbol,
++        side: execution.side === "Buy" ? "buy" : "sell",
++        quantity,
++        price,
++        fee: Math.abs(fee),
++        executedAt: new Date(executedAtMs).toISOString()
++      };
++    })
++    .filter((trade) => trade !== null);
++
+   return [
+     {
+       id: "bybit-unified",
+@@ -108,19 +145,19 @@ var normalize2 = (raw) => {
+       currency: "USD",
+       equity,
+       positions,
+-      trades: []
++      trades
+     }
+   ];
+ };
+-var fetchRaw2 = async (credentials, ctx) => {
+-  const { apiKey, apiSecret } = credentials;
+-  if (!apiKey || !apiSecret) {
+-    throw new MissingCredentialsError("bybit", "Bybit connection is missing its API key or secret");
+-  }
++
++var bybitRequest = async (apiKey, apiSecret, path, query, ctx) => {
+   const timestamp = Date.now().toString();
+-  const query = "accountType=UNIFIED";
+-  const signature = createHmac2("sha256", apiSecret).update(timestamp + apiKey + RECV_WINDOW + query).digest("hex");
+-  const response = await ctx.fetch(`${BYBIT_API}/v5/account/wallet-balance?${query}`, {
++
++  const signature = createHmac2("sha256", apiSecret)
++    .update(timestamp + apiKey + RECV_WINDOW + query)
++    .digest("hex");
++
++  const response = await ctx.fetch(`${BYBIT_API}${path}?${query}`, {
+     headers: {
+       "X-BAPI-API-KEY": apiKey,
+       "X-BAPI-TIMESTAMP": timestamp,
+@@ -128,12 +165,91 @@ var fetchRaw2 = async (credentials, ctx) => {
+       "X-BAPI-SIGN": signature
+     }
+   });
++
+   if (!response.ok) rejectResponse("bybit", "Bybit", response);
++
+   const body = await response.json();
++
+   if (body.retCode !== 0) {
+-    throw new BrokerRequestError("bybit", `Bybit error: ${body.retMsg ?? `code ${body.retCode}`}`);
++    throw new BrokerRequestError(
++      "bybit",
++      `Bybit error: ${body.retMsg ?? `code ${body.retCode}`}`
++    );
+   }
+-  return { raw: body };
++
++  return body;
++};
++var fetchRaw2 = async (credentials, ctx) => {
++  const { apiKey, apiSecret, marketType = "linear" } = credentials;
++
++  if (!apiKey || !apiSecret) {
++    throw new MissingCredentialsError(
++      "bybit",
++      "Bybit connection is missing its API key or secret"
++    );
++  }
++
++  const walletQuery = "accountType=UNIFIED";
++  const now = Date.now();
++  const dayMs = 24 * 60 * 60 * 1000;
++  const windowMs = 7 * dayMs;
++  const historyStart = now - 365 * dayMs;
++
++  const walletPromise = bybitRequest(
++    apiKey,
++    apiSecret,
++    "/v5/account/wallet-balance",
++    walletQuery,
++    ctx
++  );
++
++  const allExecutions = [];
++  const category = marketType === "spot" ? "spot" : "linear";
++  let windowStart = historyStart;
++
++  while (windowStart < now) {
++    const windowEnd = Math.min(windowStart + windowMs - 1, now);
++    let cursor = "";
++
++    do {
++      const params = new URLSearchParams({
++        category,
++        startTime: String(windowStart),
++        endTime: String(windowEnd),
++        limit: "100"
++      });
++
++      if (cursor) params.set("cursor", cursor);
++
++      const page = await bybitRequest(
++        apiKey,
++        apiSecret,
++        "/v5/execution/list",
++        params.toString(),
++        ctx
++      );
++
++      const rows = page.result?.list ?? [];
++      allExecutions.push(...rows);
++
++      cursor = page.result?.nextPageCursor ?? "";
++    } while (cursor);
++
++    windowStart += windowMs;
++  }
++
++  const wallet = await walletPromise;
++
++  return {
++    raw: {
++      wallet,
++      executions: {
++        result: {
++          list: allExecutions
++        }
++      }
++    }
++  };
+ };
+ var bybit = {
+   id: "bybit",

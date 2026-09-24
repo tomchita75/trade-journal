@@ -4,8 +4,10 @@ import { bad, handler, ok } from "@/server/api";
 import { encryptJson } from "@/server/crypto";
 import { newId, nowIso } from "@/server/ids";
 import { syncAccount } from "@/server/sync";
+import { startAutoSync } from "@/server/auto-sync";
 
 export const GET = handler((request: Request) => {
+startAutoSync();
   if (new URL(request.url).searchParams.get("summary") === "1") {
     return ok({
       accounts: db
