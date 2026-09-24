@@ -1,4 +1,4 @@
-Русская локализация через ИИ + мои доработки
+Русская локализация через ИИ + мои доработки под Bybit
 <div align="center">
 
 <img src=".github/assets/banner.svg" alt="Trade Journal: the open-source trade journal" width="100%" />
