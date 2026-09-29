@@ -5,6 +5,7 @@ import {
   AI_DEFAULT_MODELS,
   AI_PROVIDER_NAMES,
   AI_PROVIDERS,
+  isLocalAiProvider,
   type AiProvider,
   type AiSettingsPayload,
 } from "@/lib/ai-settings";
@@ -31,6 +32,7 @@ export function AiSettings() {
   }, [data]);
 
   const connection = data?.aiConnections[provider];
+  const local = isLocalAiProvider(provider);
   const environment = connection?.source === "environment";
   const name = AI_PROVIDER_NAMES[provider];
   const disabled = busy || loading || !data;
@@ -39,6 +41,7 @@ export function AiSettings() {
     setBusy(true);
     setFailure("");
     setSaved("");
+
     try {
       await postJson(
         "/api/settings",
@@ -49,10 +52,11 @@ export function AiSettings() {
           : {
               aiProvider: provider,
               aiModel: model.trim(),
-              ...(apiKey.trim() ? { [`${provider}Key`]: apiKey.trim() } : {}),
+              ...(!local && apiKey.trim() ? { [`${provider}Key`]: apiKey.trim() } : {}),
             },
         "PATCH",
       );
+
       setApiKey("");
       setSaved(remove ? `Ключ ${name} удалён.` : `Настройки ${name} сохранены.`);
       refresh();
@@ -63,23 +67,30 @@ export function AiSettings() {
     }
   };
 
+  const localServerHint =
+    provider === "lmstudio"
+      ? "LM Studio: запустите Developer → Local Server. Адрес: 127.0.0.1:1234."
+      : "Ollama: запустите Ollama и нужную модель. Адрес: 127.0.0.1:11434.";
+
   return (
     <Card id="ai-settings" className="scroll-mt-24">
       <CardHeader>
-        <CardTitle>ИИ (используйте свой ключ)</CardTitle>
+        <CardTitle>ИИ (свой ключ или локальная модель)</CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Используйте Anthropic или OpenAI для сводок, критики сделок и «спросите свой журнал».
-          Ваш ключ шифруется при хранении. Запросы ИИ идут с вашего сервера напрямую к выбранному
-          провайдеру.
+          Используйте Anthropic или OpenAI по API-ключу либо локальные LM Studio и Ollama.
+          Для локальных моделей данные журнала остаются на этом компьютере.
         </p>
+
         {data && (
           <p className="text-xs text-muted-foreground">
             Активный провайдер: {AI_PROVIDER_NAMES[data.aiProvider]} ·{" "}
-            {data.aiConfigured ? "Ключ настроен" : "Не настроено"}
+            {data.aiConfigured ? "настроен" : "не настроен"}
           </p>
         )}
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <Label htmlFor="ai-provider">Провайдер</Label>
@@ -103,6 +114,7 @@ export function AiSettings() {
               ))}
             </OptionSelect>
           </div>
+
           <div className="space-y-1">
             <Label htmlFor="ai-model">ID модели</Label>
             <Input
@@ -117,57 +129,75 @@ export function AiSettings() {
             />
           </div>
         </div>
+
         <p className="text-xs text-muted-foreground">
-          Используйте текстовую модель, доступную в вашем аккаунте провайдера. Каждый провайдер
-          хранит свою модель и ключ.
+          {local
+            ? "Укажите точное имя модели, отображаемое в локальном API-сервере."
+            : "Укажите текстовую модель, доступную в аккаунте выбранного провайдера."}
         </p>
-        <div className="space-y-1">
-          <Label htmlFor="ai-api-key">API-ключ {name}</Label>
-          <Input
-            id="ai-api-key"
-            type="password"
-            value={apiKey}
-            disabled={disabled || environment}
-            onChange={(event) => {
-              setApiKey(event.target.value);
-              setSaved("");
-            }}
-            placeholder={
-              connection?.configured
-                ? "Ключ настроен"
-                : provider === "anthropic"
-                  ? "sk-ant-…"
-                  : "sk-…"
-            }
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <p className="text-xs text-muted-foreground">
-            {environment
-              ? `Используется ${provider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY"} из переменных окружения сервера. Измените или удалите эту переменную на сервере, чтобы обновить ключ.`
-              : connection?.configured
-                ? "Оставьте пустым, чтобы сохранить текущий ключ, или введите новый."
-                : "Добавьте ваш API-ключ, затем сохраните, чтобы использовать этого провайдера."}
+
+        {local ? (
+          <p className="rounded-md border border-dashed p-3 text-xs text-muted-foreground">
+            {localServerHint} API-ключ для локальной модели не нужен.
           </p>
-        </div>
+        ) : (
+          <div className="space-y-1">
+            <Label htmlFor="ai-api-key">API-ключ {name}</Label>
+            <Input
+              id="ai-api-key"
+              type="password"
+              value={apiKey}
+              disabled={disabled || environment}
+              onChange={(event) => {
+                setApiKey(event.target.value);
+                setSaved("");
+              }}
+              placeholder={
+                connection?.configured
+                  ? "Ключ настроен"
+                  : provider === "anthropic"
+                    ? "sk-ant-…"
+                    : "sk-…"
+              }
+              autoComplete="off"
+              spellCheck={false}
+            />
+
+            <p className="text-xs text-muted-foreground">
+              {environment
+                ? `Используется ${provider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY"} из переменных окружения сервера.`
+                : connection?.configured
+                  ? "Оставьте поле пустым, чтобы сохранить текущий ключ, или введите новый."
+                  : "Добавьте API-ключ и сохраните настройки, чтобы использовать этого провайдера."}
+            </p>
+          </div>
+        )}
+
         {(error || failure) && (
           <p role="alert" className="text-xs text-destructive">
             {failure || error}
           </p>
         )}
+
         {saved && (
           <p role="status" className="text-xs text-profit">
             {saved}
           </p>
         )}
+
         <div className="flex flex-wrap gap-2">
           <Button
-            disabled={disabled || !model.trim() || (!apiKey.trim() && !connection?.configured)}
+            disabled={
+              disabled ||
+              !model.trim() ||
+              (!local && !apiKey.trim() && !connection?.configured)
+            }
             onClick={() => save()}
           >
             {busy ? "Сохранение…" : "Сохранить настройки ИИ"}
           </Button>
-          {connection?.source === "saved" && (
+
+          {!local && connection?.source === "saved" && (
             <Button variant="outline" disabled={disabled} onClick={() => save(true)}>
               Удалить ключ {name}
             </Button>
