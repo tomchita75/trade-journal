@@ -143,11 +143,23 @@ CREATE INDEX IF NOT EXISTS progress_checks_date ON progress_checks(date);
 CREATE TABLE IF NOT EXISTS missed_trades (id TEXT PRIMARY KEY, symbol TEXT NOT NULL, direction TEXT NOT NULL, observed_at TEXT NOT NULL, playbook_id TEXT, entry REAL, stop REAL, target REAL, notes TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, archived_at TEXT);
 
 INSERT OR IGNORE INTO folders (id, name, kind, created_at) VALUES
-  ('all', 'All notes', 'system', '2026-01-01T00:00:00Z'),
-  ('trade-notes', 'Trade notes', 'system', '2026-01-01T00:00:00Z'),
-  ('daily-journal', 'Daily journal', 'system', '2026-01-01T00:00:00Z'),
-  ('session-recaps', 'Session recaps', 'system', '2026-01-01T00:00:00Z'),
-  ('my-notes', 'My notes', 'system', '2026-01-01T00:00:00Z');
+  ('all', 'Все заметки', 'system', '2026-01-01T00:00:00Z'),
+  ('trade-notes', 'Заметки по сделкам', 'system', '2026-01-01T00:00:00Z'),
+  ('daily-journal', 'Дневник дня', 'system', '2026-01-01T00:00:00Z'),
+  ('session-recaps', 'Итоги сессий', 'system', '2026-01-01T00:00:00Z'),
+  ('my-notes', 'Мои заметки', 'system', '2026-01-01T00:00:00Z');
+
+UPDATE folders
+SET name = CASE id
+  WHEN 'all' THEN 'Все заметки'
+  WHEN 'trade-notes' THEN 'Заметки по сделкам'
+  WHEN 'daily-journal' THEN 'Дневник дня'
+  WHEN 'session-recaps' THEN 'Итоги сессий'
+  WHEN 'my-notes' THEN 'Мои заметки'
+  ELSE name
+END
+WHERE id IN ('all', 'trade-notes', 'daily-journal', 'session-recaps', 'my-notes')
+  AND kind = 'system';
 
 CREATE TABLE IF NOT EXISTS prop_accounts (
  id TEXT PRIMARY KEY, firm TEXT NOT NULL, name TEXT NOT NULL, program TEXT NOT NULL,
