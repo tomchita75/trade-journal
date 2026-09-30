@@ -88,12 +88,12 @@ export function PropFirmTracker() {
     [to, setTo] = useState(""),
     [search, setSearch] = useState(""),
     [showArchived, setShowArchived] = useState(false),
-    [showVoided, setShowVoided] = useState(false),
+    [showАннулировано, setShowАннулировано] = useState(false),
     [page, setPage] = useState(0),
     [modal, setModal] = useState<PropModal | null>(null);
   useEffect(
     () => setPage(0),
-    [tab, firm, accountId, currency, from, to, search, showArchived, showVoided],
+    [tab, firm, accountId, currency, from, to, search, showArchived, showАннулировано],
   );
   useEffect(() => {
     if (privacy) setModal(null);
@@ -112,7 +112,7 @@ export function PropFirmTracker() {
     setSearch("");
     setPage(0);
     setShowArchived(false);
-    setShowVoided(false);
+    setShowАннулировано(false);
     setTab("overview");
   };
   const allCash = useMemo(() => (data ? cashMovements(data.entries, data.receipts) : []), [data]);
@@ -196,7 +196,7 @@ export function PropFirmTracker() {
     .filter(
       (e) =>
         matches(e) &&
-        (showVoided || !e.voided) &&
+        (showАннулировано || !e.voided) &&
         inDates(e.occurredOn, from, to) &&
         (!query ||
           `${e.firm} ${name(e.accountId)} ${e.kind} ${e.category} ${e.reference}`
@@ -300,7 +300,7 @@ export function PropFirmTracker() {
             id: entry.id,
             revision: entry.revision,
             value: !entry.voided,
-            name: entry.voided ? "Restore entry" : "Void entry",
+            name: entry.voided ? "Восстановить запись" : "Аннулировать запись",
           })
         }
       >
@@ -321,7 +321,7 @@ export function PropFirmTracker() {
               onClick={() => setModal({ kind: "account" })}
             >
               <Plus className="h-4 w-4" />
-              Track account
+              Добавить счёт
             </Button>
             <Button
               size="sm"
@@ -330,7 +330,7 @@ export function PropFirmTracker() {
               onClick={() => setModal({ kind: "entry", type: "expense" })}
             >
               <ArrowUpRight className="h-4 w-4" />
-              Add expense
+              Добавить расход
             </Button>
             <Button
               size="sm"
@@ -338,7 +338,7 @@ export function PropFirmTracker() {
               onClick={() => setModal({ kind: "entry", type: "payout" })}
             >
               <ArrowDownLeft className="h-4 w-4" />
-              Track payout
+              Отследить выплату
             </Button>
           </div>
         }
@@ -346,9 +346,9 @@ export function PropFirmTracker() {
       <div className="space-y-5 p-4 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Spending & payouts</h2>
+            <h2 className="text-lg font-semibold">Расходы и выплаты</h2>
             <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-              See what you paid, what came back, and your net result.
+              Отслеживайте расходы, полученные выплаты и итоговый результат.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -357,7 +357,7 @@ export function PropFirmTracker() {
             </Button>
             <details className="relative">
               <summary className="cursor-pointer rounded-md border px-3 py-2 text-xs font-medium">
-                Data tools
+                Инструменты данных
               </summary>
               <div className="absolute right-0 z-20 mt-2 flex w-48 flex-col gap-1 rounded-lg border bg-card p-2 shadow-lg">
                 <Button
@@ -367,7 +367,7 @@ export function PropFirmTracker() {
                   onClick={() => setModal({ kind: "import" })}
                 >
                   <Upload className="h-4 w-4" />
-                  Import CSV
+                  Импорт CSV
                 </Button>
                 <Button
                   size="sm"
@@ -376,7 +376,7 @@ export function PropFirmTracker() {
                   onClick={() => downloadCsv(cash)}
                 >
                   <Download className="h-4 w-4" />
-                  Export cash CSV
+                  Экспорт движения денег CSV
                 </Button>
               </div>
             </details>
@@ -387,15 +387,15 @@ export function PropFirmTracker() {
             role="status"
             className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm"
           >
-            <span className="font-medium">Demo preview</span>
+            <span className="font-medium">Просмотр демо-данных</span>
             <span className="ml-2 text-muted-foreground">
-              Simulated records · Read-only · Nothing is saved
+              Смоделированные записи · Только чтение · Ничего не сохраняется
             </span>
           </div>
         )}
         {privacy && (
           <p className="rounded-lg border p-3 text-sm text-muted-foreground">
-            Privacy mode hides amounts, charts and financial details. Turn it off to edit records or
+            Privacy mode hides amounts, charts and financial details. Turn it off to edit записей or
             export cash data.
           </p>
         )}
@@ -406,13 +406,13 @@ export function PropFirmTracker() {
           >
             {error}{" "}
             <Button variant="ghost" onClick={refresh}>
-              Retry
+              Повторить
             </Button>
           </p>
         )}
         {loading && !data && (
           <p role="status" className="text-sm text-muted-foreground">
-            Loading your prop cash records…
+            Загрузка данных по проп-счетам…
           </p>
         )}
         {data && (
@@ -422,7 +422,7 @@ export function PropFirmTracker() {
                 <CardContent className="flex flex-wrap items-center gap-5 py-7">
                   <Landmark className="h-10 w-10 text-muted-foreground" />
                   <div className="max-w-2xl">
-                    <h3 className="font-semibold">Start with an account or an expense</h3>
+                    <h3 className="font-semibold">Начните со счёта или расхода</h3>
                     <p className="mt-1 text-sm text-muted-foreground">
                       Add the firm and attempt you want to track, then record fees and actual
                       payouts. You can also log shared firm costs before linking an account. No
@@ -434,11 +434,11 @@ export function PropFirmTracker() {
             )}
             <details className="rounded-xl border bg-card">
               <summary className="cursor-pointer px-4 py-3 text-sm">
-                <span className="font-medium">Filters</span>
+                <span className="font-medium">Фильтры</span>
                 <span className="ml-3 text-xs text-muted-foreground">
                   {firm || "Все фирмы"} · {accountId ? name(accountId) : "Все счета"} ·{" "}
                   {from || to ? `${from || "Начало"} to ${to || "Сегодня"}` : "Все даты"}
-                  {selectedCurrency ? ` · ${selectedCurrency}` : " · Choose currency"}
+                  {selectedCurrency ? ` · ${selectedCurrency}` : " · Выберите валюту"}
                 </span>
               </summary>
               <div className="grid gap-3 border-t p-4 sm:grid-cols-2 xl:grid-cols-5">
@@ -450,7 +450,7 @@ export function PropFirmTracker() {
                       setAccountId("");
                     }}
                   >
-                    <option value="">All firms</option>
+                    <option value="">Все фирмы</option>
                     {firms.map((v) => (
                       <option key={v} value={v}>
                         {v}
@@ -460,13 +460,13 @@ export function PropFirmTracker() {
                 </Field>
                 <Field label="Проп-счёт">
                   <OptionSelect value={accountId} onValueChange={setAccountId}>
-                    <option value="">All accounts & shared costs</option>
+                    <option value="">Все счета и общие расходы</option>
                     {data.accounts
                       .filter((a) => !firm || a.firm === firm)
                       .map((a) => (
                         <option key={a.id} value={a.id}>
                           {a.name}
-                          {a.archived ? " (archived)" : ""}
+                          {a.archived ? " (архивный)" : ""}
                         </option>
                       ))}
                   </OptionSelect>
@@ -517,14 +517,14 @@ export function PropFirmTracker() {
                       setSearch("");
                     }}
                   >
-                    Clear filters
+                    Очистить фильтры
                   </Button>
                 </div>
               </div>
             </details>
             {from && to && from > to && (
               <p role="alert" className="text-sm text-destructive">
-                The start date must be on or before the end date.
+                Начальная дата не может быть позже конечной.
               </p>
             )}
             {currencies.length > 1 && !selectedCurrency && (
@@ -537,7 +537,7 @@ export function PropFirmTracker() {
                   <div className="flex flex-wrap gap-4">
                     {currencies.map((c) => (
                       <p key={c} className="text-sm">
-                        <strong>{c}</strong> · Net cash{" "}
+                        <strong>{c}</strong> · Чистые деньги{" "}
                         {money(cashSummary(cash.filter((r) => r.currency === c)).net, c)}
                       </p>
                     ))}
@@ -548,7 +548,7 @@ export function PropFirmTracker() {
             <PropCashSummary summary={summary} currency={selectedCurrency} privacy={privacy} />
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed px-4 py-3">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                <span className="text-muted-foreground">Awaiting payout</span>
+                <span className="text-muted-foreground">Ожидается выплата</span>
                 <strong className="tabular-nums">{money(outstanding)}</strong>
                 <span className="text-xs text-muted-foreground">
                   {overdue.length ? `${overdue.length} overdue · ` : ""}All dates · Excluded from
@@ -556,12 +556,12 @@ export function PropFirmTracker() {
                 </span>
               </div>
               <Button size="sm" variant="ghost" onClick={() => setTab("payouts")}>
-                View payout requests →
+                Посмотреть запросы выплат →
               </Button>
             </div>
             <div
               role="tablist"
-              aria-label="Prop tracker sections"
+              aria-label="Разделы проп-трекера"
               className="flex gap-2 overflow-x-auto"
             >
               {["overview", "accounts", "payouts", "ledger"].map((v) => (
@@ -585,10 +585,10 @@ export function PropFirmTracker() {
                   onToggle={(event) => setShowBreakdowns(event.currentTarget.open)}
                 >
                   <summary className="cursor-pointer p-4">
-                    <span className="text-sm font-medium">Detailed breakdowns</span>
+                    <span className="text-sm font-medium">Подробная аналитика</span>
                     <span className="mt-1 block text-xs text-muted-foreground">
-                      Net cash trend, firm returns, expense categories, account progress, renewals
-                      and monthly records
+                      Чистые деньги trend, firm returns, expense categories, account progress, renewals
+                      and monthly записей
                     </span>
                   </summary>
                   {showBreakdowns && (
@@ -597,14 +597,14 @@ export function PropFirmTracker() {
                         <Card className="xl:col-span-2">
                           <CardHeader>
                             <CardTitle>
-                              Net cash over time{selectedCurrency ? ` · ${selectedCurrency}` : ""}
+                              Чистые деньги over time{selectedCurrency ? ` · ${selectedCurrency}` : ""}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
                             {privacy ? (
-                              <Empty>Chart hidden in privacy mode.</Empty>
+                              <Empty>График скрыт в режиме конфиденциальности.</Empty>
                             ) : !selectedCurrency ? (
-                              <Empty>Choose a currency to plot cash returns.</Empty>
+                              <Empty>Выберите валюту, чтобы построить график денежных результатов.</Empty>
                             ) : summaryCash.length ? (
                               <EquityArea
                                 curve="stepAfter"
@@ -617,7 +617,7 @@ export function PropFirmTracker() {
                               />
                             ) : (
                               <Empty>
-                                Record spending or a payout receipt to build your cash history.
+                                Добавьте расход или полученную выплату, чтобы сформировать денежную историю.
                               </Empty>
                             )}
                             <p className="mt-3 text-xs text-muted-foreground">
@@ -628,11 +628,11 @@ export function PropFirmTracker() {
                         </Card>
                         <Card>
                           <CardHeader>
-                            <CardTitle>Account progress · all dates</CardTitle>
+                            <CardTitle>Прогресс по счетам · все даты</CardTitle>
                           </CardHeader>
                           <CardContent className="space-y-4">
                             <div className="flex justify-between text-sm">
-                              <span>Active evaluations / verifications</span>
+                              <span>Активные оценки / верификации</span>
                               <strong>
                                 {
                                   active.filter((a) =>
@@ -642,7 +642,7 @@ export function PropFirmTracker() {
                               </strong>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Active funded / live</span>
+                              <span>Активные funded / live-счета</span>
                               <strong>
                                 {
                                   active.filter((a) =>
@@ -652,7 +652,7 @@ export function PropFirmTracker() {
                               </strong>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Resolved-phase pass rate</span>
+                              <span>Доля успешных завершённых этапов</span>
                               <strong>
                                 {resolved.length
                                   ? `${Math.round((passed / resolved.length) * 100)}%`
@@ -675,7 +675,7 @@ export function PropFirmTracker() {
                         <Card>
                           <CardHeader>
                             <CardTitle>
-                              Returns by firm{selectedCurrency ? ` · ${selectedCurrency}` : ""}
+                              Результат по фирмам{selectedCurrency ? ` · ${selectedCurrency}` : ""}
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
@@ -684,10 +684,10 @@ export function PropFirmTracker() {
                                 <table className="w-full text-left text-sm">
                                   <thead>
                                     <tr className="border-b text-xs text-muted-foreground">
-                                      <th className="py-2">Firm</th>
-                                      <th>Net spend</th>
-                                      <th>Payout cash</th>
-                                      <th>Net return</th>
+                                      <th className="py-2">Фирма</th>
+                                      <th>Чистые расходы</th>
+                                      <th>Полученные выплаты</th>
+                                      <th>Итоговый результат</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -703,13 +703,13 @@ export function PropFirmTracker() {
                                 </table>
                               </div>
                             ) : (
-                              <Empty>No cash movements in this selection.</Empty>
+                              <Empty>Нет денежных операций по выбранным фильтрам.</Empty>
                             )}
                           </CardContent>
                         </Card>
                         <Card>
                           <CardHeader>
-                            <CardTitle>Spending breakdown</CardTitle>
+                            <CardTitle>Структура расходов</CardTitle>
                           </CardHeader>
                           <CardContent className="space-y-3">
                             {byCategory.length ? (
@@ -732,17 +732,17 @@ export function PropFirmTracker() {
                                 </div>
                               ))
                             ) : (
-                              <Empty>No recorded expenses in this selection.</Empty>
+                              <Empty>Нет расходов по выбранным фильтрам.</Empty>
                             )}
                             <p className="text-xs text-muted-foreground">
-                              Gross spending by category. Refunds appear separately in the summary.
+                              Валовые расходы по категориям. Возвраты отображаются в итогах отдельно.
                             </p>
                           </CardContent>
                         </Card>
                       </div>
                       <Card>
                         <CardHeader>
-                          <CardTitle>Upcoming renewals · next 30 days & overdue</CardTitle>
+                          <CardTitle>Ближайшие продления · следующие 30 дней и просроченные</CardTitle>
                         </CardHeader>
                         <CardContent>
                           {renewals.length ? (
@@ -759,9 +759,9 @@ export function PropFirmTracker() {
                                     <p className="text-xs text-muted-foreground">
                                       {a.renewalOn} ·{" "}
                                       {a.renewalMinor === null
-                                        ? "Amount not set"
+                                        ? "Сумма не указана"
                                         : money(a.renewalMinor, a.currency)}
-                                      {a.renewalOn! < data.today ? " · Review overdue renewal" : ""}
+                                      {a.renewalOn! < data.today ? " · Проверьте просроченное продление" : ""}
                                     </p>
                                   </div>
                                   <Button
@@ -777,13 +777,13 @@ export function PropFirmTracker() {
                                       })
                                     }
                                   >
-                                    Record charge
+                                    Записать списание
                                   </Button>
                                 </div>
                               ))}
                             </div>
                           ) : (
-                            <Empty>No renewals scheduled.</Empty>
+                            <Empty>Нет запланированных продлений.</Empty>
                           )}
                           <p className="mt-3 text-xs text-muted-foreground">
                             Reminders do not create expenses or charge your card. Update the next
@@ -793,7 +793,7 @@ export function PropFirmTracker() {
                       </Card>
                       <Card>
                         <CardHeader>
-                          <CardTitle>Monthly cash review</CardTitle>
+                          <CardTitle>Ежемесячный обзор денег</CardTitle>
                         </CardHeader>
                         <CardContent>
                           {months.length ? (
@@ -801,11 +801,11 @@ export function PropFirmTracker() {
                               <table className="w-full text-left text-sm">
                                 <thead>
                                   <tr className="border-b text-xs text-muted-foreground">
-                                    <th className="py-2">Month</th>
-                                    <th>Spent</th>
-                                    <th>Refunded</th>
-                                    <th>Payout cash</th>
-                                    <th>Net</th>
+                                    <th className="py-2">Месяц</th>
+                                    <th>Потрачено</th>
+                                    <th>Возвращено</th>
+                                    <th>Полученные выплаты</th>
+                                    <th>Итого</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -822,7 +822,7 @@ export function PropFirmTracker() {
                               </table>
                             </div>
                           ) : (
-                            <Empty>No settled cash yet.</Empty>
+                            <Empty>Пока нет завершённых денежных операций.</Empty>
                           )}
                         </CardContent>
                       </Card>
@@ -847,20 +847,20 @@ export function PropFirmTracker() {
                         checked={showArchived}
                         onChange={(e) => setShowArchived(e.target.checked)}
                       />
-                      Show archived accounts
+                      Показать архивные счета
                     </label>
                   )}
                   {tab === "ledger" && (
                     <label className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
-                        checked={showVoided}
-                        onChange={(e) => setShowVoided(e.target.checked)}
+                        checked={showАннулировано}
+                        onChange={(e) => setShowАннулировано(e.target.checked)}
                       />
-                      Show voided records
+                      Показать аннулированные записи
                     </label>
                   )}
-                  <p className="ml-auto text-xs text-muted-foreground">{rowCount} records</p>
+                  <p className="ml-auto text-xs text-muted-foreground">{rowCount} записей</p>
                 </div>
                 {tab === "accounts" && (
                   <div className="grid gap-3 lg:grid-cols-2">
@@ -879,33 +879,33 @@ export function PropFirmTracker() {
                                 <p className="text-xs text-muted-foreground">
                                   {a.firm} · {label(a.program)}
                                   {a.sizeMinor !== null
-                                    ? ` · ${money(a.sizeMinor, a.currency)} nominal`
+                                    ? ` · ${money(a.sizeMinor, a.currency)} номинал`
                                     : ""}
                                 </p>
                               </div>
                               <span className="rounded-md border px-2 py-1 text-xs">
-                                {a.archived ? "Archived · " : ""}
+                                {a.archived ? "Архивный · " : ""}
                                 {label(a.status)}
                               </span>
                             </div>
                             <div className="grid grid-cols-3 gap-2 text-sm">
                               <div>
-                                <p className="text-xs text-muted-foreground">Net spend</p>
+                                <p className="text-xs text-muted-foreground">Чистые расходы</p>
                                 {money(accountSummary.netSpend, a.currency)}
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">Payout cash</p>
+                                <p className="text-xs text-muted-foreground">Полученные выплаты</p>
                                 {money(accountSummary.received, a.currency)}
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">Net return</p>
+                                <p className="text-xs text-muted-foreground">Итоговый результат</p>
                                 {money(accountSummary.net, a.currency)}
                               </div>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              Opened {a.openedOn}
-                              {a.closedOn ? ` · Resolved ${a.closedOn}` : ""}
-                              {a.parentId ? ` · Follows ${name(a.parentId)}` : ""}. Cash follows the
+                              Открыт {a.openedOn}
+                              {a.closedOn ? ` · Завершён ${a.closedOn}` : ""}
+                              {a.parentId ? ` · Продолжает ${name(a.parentId)}` : ""}. Cash follows the
                               selected dates.
                             </p>
                             <div className="flex flex-wrap gap-1">
@@ -917,7 +917,7 @@ export function PropFirmTracker() {
                                   setModal({ kind: "detail", type: "account", id: a.id })
                                 }
                               >
-                                Details & receipts
+                                Подробнее и поступления
                               </Button>
                               <Button
                                 size="sm"
@@ -933,7 +933,7 @@ export function PropFirmTracker() {
                                 disabled={readOnly}
                                 onClick={() => setModal({ kind: "account", parent: a })}
                               >
-                                Next attempt / phase
+                                Следующая попытка / этап
                               </Button>
                               <Button
                                 size="sm"
@@ -963,7 +963,7 @@ export function PropFirmTracker() {
                   <>
                     <p className="text-xs text-muted-foreground">
                       Open requests always remain visible. Completed, rejected and cancelled
-                      requests use the request-date filter. Expected amounts are after your share
+                      requests use the request-date filter. Ожидается amounts are after your share
                       and withheld fees; actual amounts come only from receipts.
                     </p>
                     {slice(listedPayouts).map((row) => (
@@ -975,36 +975,36 @@ export function PropFirmTracker() {
                                 {row.entry.firm} · {name(row.entry.accountId)}
                               </h3>
                               <p className="text-xs text-muted-foreground">
-                                Requested {row.entry.occurredOn}
-                                {row.entry.dueOn ? ` · Expected ${row.entry.dueOn}` : ""}
+                                Запрошено {row.entry.occurredOn}
+                                {row.entry.dueOn ? ` · Ожидается ${row.entry.dueOn}` : ""}
                               </p>
                             </div>
                             <span
                               className={`rounded-md border px-2 py-1 text-xs ${row.overdue ? "border-destructive text-destructive" : ""}`}
                             >
                               {row.overdue
-                                ? "Overdue · "
+                                ? "Просрочено · "
                                 : row.partial
-                                  ? "Partially received · "
+                                  ? "Получено частично · "
                                   : ""}
                               {label(row.entry.status)}
                             </span>
                           </div>
                           <div className="grid gap-3 sm:grid-cols-4">
                             <div>
-                              <p className="text-xs text-muted-foreground">Expected net</p>
+                              <p className="text-xs text-muted-foreground">Ожидается net</p>
                               {money(row.expected, row.entry.currency)}
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Actual received</p>
+                              <p className="text-xs text-muted-foreground">Фактически получено</p>
                               {money(row.actual, row.entry.currency)}
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Outstanding</p>
+                              <p className="text-xs text-muted-foreground">Осталось получить</p>
                               {money(row.remaining, row.entry.currency)}
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Actual − expected</p>
+                              <p className="text-xs text-muted-foreground">Факт − ожидание</p>
                               {money(row.variance, row.entry.currency)}
                             </div>
                           </div>
@@ -1016,13 +1016,13 @@ export function PropFirmTracker() {
                               }
                               onClick={() => setModal({ kind: "receipt", payout: row.entry })}
                             >
-                              Record receipt / reversal
+                              Записать поступление / отмену
                             </Button>
                             {entryActions(row.entry)}
                           </div>
                           <details>
                             <summary className="cursor-pointer text-xs">
-                              Cash movements · {(receiptsById.get(row.entry.id) ?? []).length}
+                              Денежные операции · {(receiptsById.get(row.entry.id) ?? []).length}
                             </summary>
                             <div className="mt-2 space-y-2">
                               {(receiptsById.get(row.entry.id) ?? []).map((r) => (
@@ -1033,7 +1033,7 @@ export function PropFirmTracker() {
                                   <span>
                                     {r.occurredOn} · {label(r.kind)} ·{" "}
                                     {money(r.amountMinor, row.entry.currency)}
-                                    {r.voided ? " · Voided" : ""}
+                                    {r.voided ? " · Аннулировано" : ""}
                                   </span>
                                   <Button
                                     size="sm"
@@ -1075,12 +1075,12 @@ export function PropFirmTracker() {
                       <table className="w-full min-w-[740px] text-left text-sm">
                         <thead>
                           <tr className="border-b text-xs text-muted-foreground">
-                            <th className="py-2">Date</th>
-                            <th>Firm / account</th>
-                            <th>Entry</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th className="py-2">Дата</th>
+                            <th>Фирма / счёт</th>
+                            <th>Запись</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1112,7 +1112,7 @@ export function PropFirmTracker() {
                                   entry.currency,
                                 )}
                                 {entry.kind === "payout" && (
-                                  <p className="text-xs text-muted-foreground">Expected net</p>
+                                  <p className="text-xs text-muted-foreground">Ожидается net</p>
                                 )}
                               </td>
                               <td>{entry.voided ? "Аннулировано" : label(entry.status)}</td>
@@ -1124,35 +1124,39 @@ export function PropFirmTracker() {
                     </CardContent>
                   </Card>
                 )}
-                {!rowCount && <Empty>No records match this view.</Empty>}
-                {rowCount > PAGE_SIZE && (
-                  <div className="flex items-center justify-between">
-                    <Button
-                      variant="outline"
-                      disabled={safePage === 0}
-                      onClick={() => setPage(safePage - 1)}
-                    >
-                      Previous
-                    </Button>
-                    <span className="text-xs">
-                      Page {safePage + 1} of {Math.ceil(rowCount / PAGE_SIZE)}
-                    </span>
-                    <Button
-                      variant="outline"
-                      disabled={(safePage + 1) * PAGE_SIZE >= rowCount}
-                      onClick={() => setPage(safePage + 1)}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                )}
+                {!rowCount && <Empty>No записей match this view.</Empty>}
+                {!rowCount && <Empty>Нет записей, соответствующих выбранному представлению.</Empty>}
+
+{rowCount > PAGE_SIZE && (
+  <div className="flex items-center justify-between">
+    <Button
+      variant="outline"
+      disabled={safePage === 0}
+      onClick={() => setPage(safePage - 1)}
+    >
+      Назад
+    </Button>
+
+    <span className="text-xs">
+      Страница {safePage + 1} из {Math.ceil(rowCount / PAGE_SIZE)}
+    </span>
+
+    <Button
+      variant="outline"
+      disabled={(safePage + 1) * PAGE_SIZE >= rowCount}
+      onClick={() => setPage(safePage + 1)}
+    >
+      Далее
+    </Button>
+  </div>
+)}
               </div>
             )}
             <details className="rounded-xl border p-4 text-xs text-muted-foreground">
-              <summary className="cursor-pointer font-medium">How these numbers work</summary>
+              <summary className="cursor-pointer font-medium">Как рассчитываются показатели</summary>
               <div className="mt-3 space-y-2">
                 <p>
-                  Net cash return = actual payout receipts − payout reversals + expense refunds −
+                  Чистые деньги return = actual payout receipts − payout reversals + expense refunds −
                   spending. Net spend = spending − refunds. ROI = net cash return ÷ net spend; it is
                   unavailable when net spend is zero or negative.
                 </p>
@@ -1169,7 +1173,7 @@ export function PropFirmTracker() {
                 <p>
                   Requests and reminders never move money. This tracker does not place trades,
                   connect banks, infer payout eligibility, or change journal trading P&L. JSON
-                  exports in Settings include these records and their audit history; copy the data
+                  exports in Settings include these записей and their audit history; copy the data
                   directory to preserve attachment files too.
                 </p>
               </div>
