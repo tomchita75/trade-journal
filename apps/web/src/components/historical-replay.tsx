@@ -52,6 +52,7 @@ interface HistoricalReplayProps {
   history: History;
   trade: Trade;
   executions: Execution[];
+privacy: boolean;
 }
 
 const formatNumber = (value: number, maximumFractionDigits = 6) =>
@@ -95,13 +96,14 @@ const candleTimeForExecution = (
     chosen = candleTime;
   }
 
-  return chosen;
+  return chosen ?? null;
 };
 
 export function HistoricalReplay({
   history,
   trade,
   executions,
+privacy,
 }: HistoricalReplayProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -206,19 +208,20 @@ export function HistoricalReplay({
       localization: {
         locale: "ru-RU",
         timeFormatter: (time: Time) => {
-          const timestamp =
-            typeof time === "number"
-              ? time
-              : "timestamp" in time
-                ? time.timestamp
-                : Date.UTC(time.year, time.month - 1, time.day) / 1000;
-
-          return new Intl.DateTimeFormat("ru-RU", {
-            day: "2-digit",
-            month: "short",
-            hour: "2-digit",
-            minute: "2-digit",
-          }).format(new Date(timestamp * 1000));
+          const timestamp: number =
+  typeof time === "number"
+    ? time
+    : typeof time === "string"
+      ? Math.floor(new Date(time).getTime() / 1000)
+      : "timestamp" in time && typeof time.timestamp === "number"
+        ? time.timestamp
+        : "year" in time && "month" in time && "day" in time
+          ? Date.UTC(
+              Number(time.year),
+              Number(time.month) - 1,
+              Number(time.day),
+            ) / 1000
+          : 0;
         },
         priceFormatter: (price: number) => formatNumber(price),
       },
@@ -337,12 +340,14 @@ export function HistoricalReplay({
   const firstBar = bars[0];
   const lastBar = bars[bars.length - 1];
 
-  const hoveredDate =
-    hoveredTime === null
-      ? null
-      : typeof hoveredTime === "number"
-        ? new Date(hoveredTime * 1000)
-        : "timestamp" in hoveredTime
+ const tooltipDate =
+  hoveredTime === null
+    ? null
+    : typeof hoveredTime === "number"
+      ? new Date(hoveredTime * 1000)
+      : typeof hoveredTime === "string"
+        ? new Date(hoveredTime)
+        : "timestamp" in hoveredTime && typeof hoveredTime.timestamp === "number"
           ? new Date(hoveredTime.timestamp * 1000)
           : new Date(
               hoveredTime.year,
@@ -361,11 +366,12 @@ export function HistoricalReplay({
         </div>
 
         <div className="grid grid-cols-2 gap-x-5 gap-y-1 rounded-lg border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          <span>Диапазон</span>
-          <span className="text-right font-medium text-foreground">
-            {formatDateTime(firstBar.time * 1000)} —{" "}
-            {formatDateTime(lastBar.time * 1000)}
-          </span>
+         <span>Диапазон</span>
+<span className="text-right font-medium text-foreground">
+  {firstBar && lastBar
+    ? `${formatDateTime(firstBar.time * 1000)} — ${formatDateTime(lastBar.time * 1000)}`
+    : "—"}
+</span>
 
           <span>Цена под курсором</span>
           <span className="text-right font-medium text-foreground">
@@ -374,11 +380,11 @@ export function HistoricalReplay({
 
           <span>Время</span>
           <span className="text-right font-medium text-foreground">
-            {hoveredDate
+            {tooltipDate
               ? new Intl.DateTimeFormat("ru-RU", {
                   dateStyle: "short",
                   timeStyle: "short",
-                }).format(hoveredDate)
+                }).format(tooltipDate)
               : "—"}
           </span>
         </div>

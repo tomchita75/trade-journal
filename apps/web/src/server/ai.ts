@@ -9,6 +9,11 @@ const LOCAL_AI_BASE_URL = {
   ollama: "http://127.0.0.1:11434/v1",
 } as const;
 
+type LocalAiProvider = keyof typeof LOCAL_AI_BASE_URL;
+
+const isConfiguredLocalProvider = (provider: string): provider is LocalAiProvider =>
+  provider === "lmstudio" || provider === "ollama";
+
 export const aiConfigured = (): boolean => getAiKey(getAiProvider()) !== null;
 
 const SYSTEM = `You are the reflection layer of a trader's journal.
@@ -30,7 +35,8 @@ export const runAi = async (prompt: string, maxOutputTokens = 1200): Promise<str
   }
 
   const model = getAiModel(provider);
-  const openAiCompatible = provider === "openai" || isLocalAiProvider(provider);
+  const localProvider = isConfiguredLocalProvider(provider);
+  const openAiCompatible = provider === "openai" || localProvider;
 
   try {
     const result = await generateText({
@@ -39,7 +45,7 @@ export const runAi = async (prompt: string, maxOutputTokens = 1200): Promise<str
           ? createOpenAI({ apiKey }).responses(model)
           : createOpenAI({
               apiKey,
-              baseURL: LOCAL_AI_BASE_URL[provider],
+              baseURL: LOCAL_AI_BASE_URL[provider as LocalAiProvider],
             }).chat(model)
         : createAnthropic({ apiKey })(model),
 
