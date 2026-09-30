@@ -394,11 +394,12 @@ export function PropFirmTracker() {
           </div>
         )}
         {privacy && (
-          <p className="rounded-lg border p-3 text-sm text-muted-foreground">
-            Privacy mode hides amounts, charts and financial details. Turn it off to edit записей or
-            export cash data.
-          </p>
-        )}
+  <p className="rounded-lg border p-3 text-sm text-muted-foreground">
+    Режим конфиденциальности скрывает суммы, графики и финансовые данные.
+    Отключите его, чтобы редактировать записи или экспортировать денежные
+    операции.
+  </p>
+)}
         {error && !demo && (
           <p
             role="alert"
@@ -423,11 +424,12 @@ export function PropFirmTracker() {
                   <Landmark className="h-10 w-10 text-muted-foreground" />
                   <div className="max-w-2xl">
                     <h3 className="font-semibold">Начните со счёта или расхода</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Add the firm and attempt you want to track, then record fees and actual
-                      payouts. You can also log shared firm costs before linking an account. No
-                      firm, fee schedule or payout rules are preloaded.
-                    </p>
+                   <p className="mt-1 text-sm text-muted-foreground">
+  Добавьте проп-фирму и этап, который хотите отслеживать, затем фиксируйте
+  комиссии и фактически полученные выплаты. До привязки счёта можно также
+  учитывать общие расходы по фирме. Данные о фирмах, комиссиях и правилах
+  выплат заранее не загружены.
+</p>
                   </div>
                 </CardContent>
               </Card>
@@ -437,7 +439,7 @@ export function PropFirmTracker() {
                 <span className="font-medium">Фильтры</span>
                 <span className="ml-3 text-xs text-muted-foreground">
                   {firm || "Все фирмы"} · {accountId ? name(accountId) : "Все счета"} ·{" "}
-                  {from || to ? `${from || "Начало"} to ${to || "Сегодня"}` : "Все даты"}
+                  {from || to ? `${from || "Начало"} по ${to || "Сегодня"}` : "Все даты"}
                   {selectedCurrency ? ` · ${selectedCurrency}` : " · Выберите валюту"}
                 </span>
               </summary>
@@ -502,9 +504,9 @@ export function PropFirmTracker() {
                 </Field>
                 <div className="flex flex-wrap items-center justify-between gap-2 sm:col-span-2 xl:col-span-5">
                   <p className="text-xs text-muted-foreground">
-                    Dates apply to cash received or paid. Account history and pending requests cover
-                    all dates.
-                  </p>
+  Даты применяются к полученным и уплаченным деньгам. История счетов и
+  ожидающие запросы охватывают все даты.
+</p>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -531,9 +533,9 @@ export function PropFirmTracker() {
               <Card>
                 <CardContent className="py-4">
                   <p className="mb-3 text-sm">
-                    Currencies are never added together. Choose one above for charts and detailed
-                    totals.
-                  </p>
+  Валюты никогда не суммируются между собой. Выберите одну валюту выше для
+  графиков и подробных итогов.
+</p>
                   <div className="flex flex-wrap gap-4">
                     {currencies.map((c) => (
                       <p key={c} className="text-sm">
@@ -550,10 +552,10 @@ export function PropFirmTracker() {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                 <span className="text-muted-foreground">Ожидается выплата</span>
                 <strong className="tabular-nums">{money(outstanding)}</strong>
-                <span className="text-xs text-muted-foreground">
-                  {overdue.length ? `${overdue.length} overdue · ` : ""}All dates · Excluded from
-                  received cash
-                </span>
+               <span className="text-xs text-muted-foreground">
+  {overdue.length ? `Просрочено: ${overdue.length} · ` : ""}
+  Все даты · Не входит в полученные деньги
+</span>
               </div>
               <Button size="sm" variant="ghost" onClick={() => setTab("payouts")}>
                 Посмотреть запросы выплат →
@@ -586,10 +588,10 @@ export function PropFirmTracker() {
                 >
                   <summary className="cursor-pointer p-4">
                     <span className="text-sm font-medium">Подробная аналитика</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">
-                      Чистые деньги trend, firm returns, expense categories, account progress, renewals
-                      and monthly записей
-                    </span>
+                  <span className="mt-1 block text-xs text-muted-foreground">
+  Динамика чистых денег, результат по фирмам, категории расходов, прогресс
+  счетов, продления и помесячные записи.
+</span>
                   </summary>
                   {showBreakdowns && (
                     <div className="space-y-4 border-t p-3 sm:p-4">
@@ -597,8 +599,8 @@ export function PropFirmTracker() {
                         <Card className="xl:col-span-2">
                           <CardHeader>
                             <CardTitle>
-                              Чистые деньги over time{selectedCurrency ? ` · ${selectedCurrency}` : ""}
-                            </CardTitle>
+  Динамика чистых денег{selectedCurrency ? ` · ${selectedCurrency}` : ""}
+</CardTitle>
                           </CardHeader>
                           <CardContent>
                             {privacy ? (
@@ -620,10 +622,10 @@ export function PropFirmTracker() {
                                 Добавьте расход или полученную выплату, чтобы сформировать денежную историю.
                               </Empty>
                             )}
-                            <p className="mt-3 text-xs text-muted-foreground">
-                              Starts at zero for the selected period. Payouts + refunds − expenses −
-                              reversals.
-                            </p>
+                           <p className="mt-3 text-xs text-muted-foreground">
+  Начинается с нуля за выбранный период. Выплаты + возвраты − расходы −
+  отмены.
+</p>
                           </CardContent>
                         </Card>
                         <Card>
@@ -632,7 +634,7 @@ export function PropFirmTracker() {
                           </CardHeader>
                           <CardContent className="space-y-4">
                             <div className="flex justify-between text-sm">
-                              <span>Активные оценки / верификации</span>
+                              <span>Активные funded / live-счета</span>
                               <strong>
                                 {
                                   active.filter((a) =>
@@ -660,14 +662,14 @@ export function PropFirmTracker() {
                               </strong>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              {passed} passed / {resolved.length} passed or breached evaluation
-                              phases. Active and voluntarily closed phases are excluded; this is not
-                              a whole-challenge success rate.
-                            </p>
+  Пройдено этапов: {passed} из {resolved.length}. Учитываются только
+  завершённые этапы оценки: пройденные или проваленные. Активные и добровольно
+  закрытые этапы исключены; это не общий процент успеха по челленджам.
+</p>
                             <p className="border-t pt-4 text-xs text-muted-foreground">
-                              Link accounts to journal trades from account details. Funding sizes
-                              are descriptive and never counted as your cash investment.
-                            </p>
+  Привязывайте счета к сделкам журнала в карточке счёта. Размер
+  финансирования указан справочно и не считается вашим денежным вложением.
+</p>
                           </CardContent>
                         </Card>
                       </div>
@@ -785,10 +787,10 @@ export function PropFirmTracker() {
                           ) : (
                             <Empty>Нет запланированных продлений.</Empty>
                           )}
-                          <p className="mt-3 text-xs text-muted-foreground">
-                            Reminders do not create expenses or charge your card. Update the next
-                            date after reviewing a renewal.
-                          </p>
+                         <p className="mt-3 text-xs text-muted-foreground">
+  Напоминания не создают расход и не списывают деньги с карты. Обновите
+  следующую дату после проверки продления.
+</p>
                         </CardContent>
                       </Card>
                       <Card>
@@ -854,8 +856,8 @@ export function PropFirmTracker() {
                     <label className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
-                        checked={showАннулировано}
-                        onChange={(e) => setShowАннулировано(e.target.checked)}
+checked={showАннулировано}
+onChange={(e) => setShowАннулировано(e.target.checked)}
                       />
                       Показать аннулированные записи
                     </label>
@@ -903,11 +905,11 @@ export function PropFirmTracker() {
                               </div>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              Открыт {a.openedOn}
-                              {a.closedOn ? ` · Завершён ${a.closedOn}` : ""}
-                              {a.parentId ? ` · Продолжает ${name(a.parentId)}` : ""}. Cash follows the
-                              selected dates.
-                            </p>
+  Открыт {a.openedOn}
+  {a.closedOn ? ` · Завершён ${a.closedOn}` : ""}
+  {a.parentId ? ` · Продолжает ${name(a.parentId)}` : ""}. Денежные операции
+  учитываются по выбранным датам.
+</p>
                             <div className="flex flex-wrap gap-1">
                               <Button
                                 size="sm"
@@ -925,8 +927,8 @@ export function PropFirmTracker() {
                                 disabled={readOnly}
                                 onClick={() => setModal({ kind: "account", account: a })}
                               >
-                                Edit
-                              </Button>
+  Редактировать
+</Button>
                               <Button
                                 size="sm"
                                 variant="ghost"
@@ -961,11 +963,12 @@ export function PropFirmTracker() {
                 )}
                 {tab === "payouts" && (
                   <>
-                    <p className="text-xs text-muted-foreground">
-                      Open requests always remain visible. Completed, rejected and cancelled
-                      requests use the request-date filter. Ожидается amounts are after your share
-                      and withheld fees; actual amounts come only from receipts.
-                    </p>
+                   <p className="text-xs text-muted-foreground">
+  Открытые запросы всегда отображаются. Для завершённых, отклонённых и
+  отменённых запросов применяется фильтр по дате запроса. Ожидаемые суммы
+  указаны после вашей доли и удержанных комиссий; фактические суммы берутся
+  только из поступлений.
+</p>
                     {slice(listedPayouts).map((row) => (
                       <Card key={row.entry.id}>
                         <CardContent className="space-y-4 py-5">
@@ -992,7 +995,7 @@ export function PropFirmTracker() {
                           </div>
                           <div className="grid gap-3 sm:grid-cols-4">
                             <div>
-                              <p className="text-xs text-muted-foreground">Ожидается net</p>
+                              <p className="text-xs text-muted-foreground">Ожидаемая чистая сумма</p>
                               {money(row.expected, row.entry.currency)}
                             </div>
                             <div>
@@ -1068,10 +1071,10 @@ export function PropFirmTracker() {
                   <Card>
                     <CardContent className="overflow-x-auto pt-4">
                       <p className="mb-3 text-xs text-muted-foreground">
-                        Expenses and refunds use cash dates; payout rows use request dates. Export
-                        cash CSV for individual settlement dates. Payout requests do not count as
-                        income.
-                      </p>
+  Расходы и возвраты учитываются по дате движения денег; выплаты — по дате
+  запроса. Экспортируйте CSV денежных операций для отдельных дат расчёта.
+  Запросы выплат не считаются доходом.
+</p>
                       <table className="w-full min-w-[740px] text-left text-sm">
                         <thead>
                           <tr className="border-b text-xs text-muted-foreground">
@@ -1124,7 +1127,6 @@ export function PropFirmTracker() {
                     </CardContent>
                   </Card>
                 )}
-                {!rowCount && <Empty>No записей match this view.</Empty>}
                 {!rowCount && <Empty>Нет записей, соответствующих выбранному представлению.</Empty>}
 
 {rowCount > PAGE_SIZE && (
@@ -1153,31 +1155,40 @@ export function PropFirmTracker() {
               </div>
             )}
             <details className="rounded-xl border p-4 text-xs text-muted-foreground">
-              <summary className="cursor-pointer font-medium">Как рассчитываются показатели</summary>
-              <div className="mt-3 space-y-2">
-                <p>
-                  Чистые деньги return = actual payout receipts − payout reversals + expense refunds −
-                  spending. Net spend = spending − refunds. ROI = net cash return ÷ net spend; it is
-                  unavailable when net spend is zero or negative.
-                </p>
-                <p>
-                  Amounts use each currency’s minor units. Currencies are never converted or
-                  combined automatically. Your firm’s actual approval, payout rules and bank
-                  statement remain authoritative.
-                </p>
-                <p>
-                  Past attempts, breached accounts and archived accounts stay in cash returns.
-                  Shared firm costs are included in firm totals but are not silently allocated to
-                  individual accounts.
-                </p>
-                <p>
-                  Requests and reminders never move money. This tracker does not place trades,
-                  connect banks, infer payout eligibility, or change journal trading P&L. JSON
-                  exports in Settings include these записей and their audit history; copy the data
-                  directory to preserve attachment files too.
-                </p>
-              </div>
-            </details>
+  <summary className="cursor-pointer font-medium">
+    Как рассчитываются показатели
+  </summary>
+
+  <div className="mt-3 space-y-2">
+    <p>
+      Итоговый денежный результат = фактически полученные выплаты − отмены
+      выплат + возвраты расходов − расходы. Чистые расходы = расходы −
+      возвраты. ROI = итоговый денежный результат ÷ чистые расходы; показатель
+      недоступен при нулевых или отрицательных чистых расходах.
+    </p>
+
+    <p>
+      Суммы хранятся в минимальных единицах соответствующей валюты. Валюты
+      никогда не конвертируются и не объединяются автоматически. Решения
+      проп-фирмы, её правила выплат и банковская выписка остаются
+      первоисточником.
+    </p>
+
+    <p>
+      Прошлые попытки, проваленные и архивные счета остаются в расчётах
+      денежных результатов. Общие расходы фирмы входят в итог по фирме, но не
+      распределяются автоматически по отдельным счетам.
+    </p>
+
+    <p>
+      Запросы на выплату и напоминания не перемещают деньги. Этот трекер не
+      открывает сделки, не подключается к банкам, не определяет право на
+      выплату и не изменяет торговый P&amp;L журнала. Экспорт JSON в настройках
+      включает эти записи и историю изменений; для сохранения вложений также
+      копируйте папку данных.
+    </p>
+  </div>
+</details>
           </>
         )}
         {modal && data && !readOnly && (
