@@ -50,6 +50,7 @@ export const getMultipliers = (): Record<string, number> => {
 export const aiKeyEnvironment = (provider: AiProvider): string | null => {
   if (provider === "openai") return process.env.OPENAI_API_KEY?.trim() || null;
   if (provider === "anthropic") return process.env.ANTHROPIC_API_KEY?.trim() || null;
+  if (provider === "openrouter") return process.env.OPENROUTER_API_KEY?.trim() || null;
   return null;
 };
 
@@ -94,6 +95,8 @@ export const aiModelSetting = (provider: AiProvider): string => {
       return "aiModel";
     case "openai":
       return "openaiModel";
+    case "openrouter":
+      return "openrouterModel";
     case "lmstudio":
       return "lmstudioModel";
     case "ollama":
@@ -120,11 +123,12 @@ export const getAiSettings = (): AiSettingsPayload => {
   });
 
   const aiConnections = {
-    anthropic: connection("anthropic"),
-    openai: connection("openai"),
-    lmstudio: connection("lmstudio"),
-    ollama: connection("ollama"),
-  };
+  anthropic: connection("anthropic"),
+  openai: connection("openai"),
+  openrouter: connection("openrouter"),
+  lmstudio: connection("lmstudio"),
+  ollama: connection("ollama"),
+};
 
   return {
     aiProvider,

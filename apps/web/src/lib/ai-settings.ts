@@ -1,17 +1,25 @@
-export const AI_PROVIDERS = ["anthropic", "openai", "lmstudio", "ollama"] as const;
+export const AI_PROVIDERS = [
+  "anthropic",
+  "openai",
+  "openrouter",
+  "lmstudio",
+  "ollama",
+] as const;
 
 export type AiProvider = (typeof AI_PROVIDERS)[number];
 
 export const AI_DEFAULT_MODELS: Record<AiProvider, string> = {
   anthropic: "claude-opus-5",
   openai: "gpt-4.1-mini",
-  lmstudio: "qwen3.5-9b",
+  openrouter: "google/gemini-2.5-flash",
+  lmstudio: "google/gemma-4-12b-qat",
   ollama: "qwen3:8b",
 };
 
 export const AI_PROVIDER_NAMES: Record<AiProvider, string> = {
   anthropic: "Anthropic",
   openai: "OpenAI",
+  openrouter: "OpenRouter",
   lmstudio: "LM Studio (локально)",
   ollama: "Ollama (локально)",
 };

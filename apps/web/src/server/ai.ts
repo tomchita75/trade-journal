@@ -9,6 +9,8 @@ const LOCAL_AI_BASE_URL = {
   ollama: "http://127.0.0.1:11434/v1",
 } as const;
 
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
+
 type LocalAiProvider = keyof typeof LOCAL_AI_BASE_URL;
 
 const isConfiguredLocalProvider = (provider: string): provider is LocalAiProvider =>
@@ -38,16 +40,36 @@ export const runAi = async (prompt: string, maxOutputTokens = 1200): Promise<str
   const localProvider = isConfiguredLocalProvider(provider);
   const openAiCompatible = provider === "openai" || localProvider;
 
+  const localPrompt =
+    provider === "lmstudio" && model.toLowerCase().includes("qwen")
+      ? `${prompt}\n\n/no_think`
+      : prompt;
+
+  const outputTokens =
+    provider === "lmstudio" && model.toLowerCase().includes("qwen")
+      ? Math.max(maxOutputTokens, 1800)
+      : maxOutputTokens;
+
   try {
     const result = await generateText({
-      model: openAiCompatible
-        ? provider === "openai"
-          ? createOpenAI({ apiKey }).responses(model)
-          : createOpenAI({
+      model:
+        provider === "openrouter"
+          ? createOpenAI({
               apiKey,
-              baseURL: LOCAL_AI_BASE_URL[provider as LocalAiProvider],
+              baseURL: OPENROUTER_BASE_URL,
+              headers: {
+                "HTTP-Referer": "http://localhost:3000",
+                "X-Title": "Trade Journal",
+              },
             }).chat(model)
-        : createAnthropic({ apiKey })(model),
+          : openAiCompatible
+            ? provider === "openai"
+              ? createOpenAI({ apiKey }).responses(model)
+              : createOpenAI({
+                  apiKey,
+                  baseURL: LOCAL_AI_BASE_URL[provider as LocalAiProvider],
+                }).chat(model)
+            : createAnthropic({ apiKey })(model),
 
       ...(provider === "openai"
         ? {
@@ -65,6 +87,7 @@ export const runAi = async (prompt: string, maxOutputTokens = 1200): Promise<str
               openai: {
                 chatTemplateKwargs: {
                   enable_thinking: false,
+                  enableThinking: false,
                 },
               },
             },
@@ -72,14 +95,15 @@ export const runAi = async (prompt: string, maxOutputTokens = 1200): Promise<str
         : {}),
 
       system: SYSTEM,
-      prompt,
-      maxOutputTokens,
+      prompt: localPrompt,
+      maxOutputTokens: outputTokens,
     });
 
     if (!result.text.trim()) {
       if (provider === "lmstudio") {
         throw new Error(
-          "LM Studio вернул рассуждение без итогового текста. Проверьте режим thinking модели.",
+          "LM Studio использовал весь лимит на reasoning и не вернул итоговый текст. " +
+            "В настройках модели LM Studio отключите Thinking/Reasoning либо увеличьте Max Tokens.",
         );
       }
 

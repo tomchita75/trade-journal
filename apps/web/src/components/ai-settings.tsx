@@ -16,8 +16,37 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { OptionSelect } from "./ui/option-select";
 
+const environmentVariableName = (provider: AiProvider): string => {
+  switch (provider) {
+    case "anthropic":
+      return "ANTHROPIC_API_KEY";
+    case "openai":
+      return "OPENAI_API_KEY";
+    case "openrouter":
+      return "OPENROUTER_API_KEY";
+    case "lmstudio":
+    case "ollama":
+      return "";
+  }
+};
+
+const apiKeyPlaceholder = (provider: AiProvider): string => {
+  switch (provider) {
+    case "anthropic":
+      return "sk-ant-…";
+    case "openai":
+      return "sk-…";
+    case "openrouter":
+      return "sk-or-v1-…";
+    case "lmstudio":
+    case "ollama":
+      return "";
+  }
+};
+
 export function AiSettings() {
   const { data, error, loading, refresh } = useApi<AiSettingsPayload>("/api/settings");
+
   const [provider, setProvider] = useState<AiProvider>("anthropic");
   const [model, setModel] = useState(AI_DEFAULT_MODELS.anthropic);
   const [apiKey, setApiKey] = useState("");
@@ -61,7 +90,9 @@ export function AiSettings() {
       setSaved(remove ? `Ключ ${name} удалён.` : `Настройки ${name} сохранены.`);
       refresh();
     } catch (cause) {
-      setFailure(cause instanceof Error ? cause.message : "Не удалось сохранить настройки ИИ.");
+      setFailure(
+        cause instanceof Error ? cause.message : "Не удалось сохранить настройки ИИ.",
+      );
     } finally {
       setBusy(false);
     }
@@ -75,13 +106,14 @@ export function AiSettings() {
   return (
     <Card id="ai-settings" className="scroll-mt-24">
       <CardHeader>
-        <CardTitle>ИИ (свой ключ или локальная модель)</CardTitle>
+        <CardTitle>ИИ: API-ключ или локальная модель</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Используйте Anthropic или OpenAI по API-ключу либо локальные LM Studio и Ollama.
-          Для локальных моделей данные журнала остаются на этом компьютере.
+          Используйте Anthropic, OpenAI или OpenRouter по API-ключу либо локальные
+          LM Studio и Ollama. Для локальных моделей данные журнала остаются на этом
+          компьютере.
         </p>
 
         {data && (
@@ -94,6 +126,7 @@ export function AiSettings() {
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <Label htmlFor="ai-provider">Провайдер</Label>
+
             <OptionSelect
               id="ai-provider"
               value={provider}
@@ -117,6 +150,7 @@ export function AiSettings() {
 
           <div className="space-y-1">
             <Label htmlFor="ai-model">ID модели</Label>
+
             <Input
               id="ai-model"
               value={model}
@@ -133,7 +167,9 @@ export function AiSettings() {
         <p className="text-xs text-muted-foreground">
           {local
             ? "Укажите точное имя модели, отображаемое в локальном API-сервере."
-            : "Укажите текстовую модель, доступную в аккаунте выбранного провайдера."}
+            : provider === "openrouter"
+              ? "Укажите OpenRouter model ID в формате provider/model, например openrouter/auto"
+              : "Укажите текстовую модель, доступную в аккаунте выбранного провайдера."}
         </p>
 
         {local ? (
@@ -143,6 +179,7 @@ export function AiSettings() {
         ) : (
           <div className="space-y-1">
             <Label htmlFor="ai-api-key">API-ключ {name}</Label>
+
             <Input
               id="ai-api-key"
               type="password"
@@ -153,11 +190,7 @@ export function AiSettings() {
                 setSaved("");
               }}
               placeholder={
-                connection?.configured
-                  ? "Ключ настроен"
-                  : provider === "anthropic"
-                    ? "sk-ant-…"
-                    : "sk-…"
+                connection?.configured ? "Ключ настроен" : apiKeyPlaceholder(provider)
               }
               autoComplete="off"
               spellCheck={false}
@@ -165,7 +198,7 @@ export function AiSettings() {
 
             <p className="text-xs text-muted-foreground">
               {environment
-                ? `Используется ${provider === "openai" ? "OPENAI_API_KEY" : "ANTHROPIC_API_KEY"} из переменных окружения сервера.`
+                ? `Используется ${environmentVariableName(provider)} из переменных окружения сервера.`
                 : connection?.configured
                   ? "Оставьте поле пустым, чтобы сохранить текущий ключ, или введите новый."
                   : "Добавьте API-ключ и сохраните настройки, чтобы использовать этого провайдера."}
