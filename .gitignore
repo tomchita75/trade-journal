@@ -25,3 +25,6 @@ data/
 .DS_Store
 *.log
 coverage/
+
+.env.production
+data/
